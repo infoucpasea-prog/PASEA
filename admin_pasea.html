@@ -1251,16 +1251,13 @@ function exporterPDF() {
     + '.logo-l img, .logo-r img{width:80px;height:80px;object-fit:contain;}'
     + '.titre-c{text-align:center;}'
     + '.titre-projet{font-size:11pt;font-weight:700;color:#0D2B6B;line-height:1.4;margin-bottom:3px;}'
-    + '.titre-objet{font-size:10pt;font-weight:600;color:#222;line-height:1.4;margin-bottom:2px;}'
-    + '.titre-date{font-size:9pt;color:#444;font-style:italic;}'
+    + '.titre-objet{font-size:10pt;font-weight:600;color:#222;line-height:1.4;}'
     /* Filet tricolore et bandeau LISTE DE PRÉSENCE */
     + '.tri{height:3px;background:linear-gradient(90deg,#0D2B6B 33%,white 33%,white 67%,#B8860B 67%);margin-bottom:3mm;}'
     + '.band{background:#1565C0;padding:7px;text-align:center;margin-bottom:3mm;}'
     + '.band span{font-size:13pt;font-weight:700;color:white;letter-spacing:2px;font-family:Georgia,serif;text-transform:uppercase;}'
-    /* Bloc Objet/Lieu à gauche, Date/Heure à droite */
-    + '.meta{display:flex;justify-content:space-between;align-items:stretch;margin-bottom:3mm;font-size:9pt;line-height:1.9;}'
-    + '.ml{flex:1;padding:5px 10px;border-left:3px solid #1565C0;}'
-    + '.mr{flex:0 0 auto;text-align:right;padding:5px 10px 5px 14px;border-right:3px solid #B8860B;background:#F8FAFF;min-width:38%;}'
+    /* Ligne d'info simple et élégante : date, heure, lieu en italique centré */
+    + '.info-ligne{text-align:center;font-style:italic;font-size:9.5pt;color:#333;margin-bottom:4mm;letter-spacing:0.3px;}'
     /* Tableau avec tfoot intégré pour le pied de page */
     + 'table{width:100%;border-collapse:collapse;}'
     + 'thead{display:table-header-group;}'
@@ -1278,15 +1275,15 @@ function exporterPDF() {
     +   '<div class="titre-c">'
     +     '<div class="titre-projet">Projet d\'Appui \u00e0 la S\u00e9curit\u00e9 de l\'Eau et \u00e0 l\'Assainissement (PASEA)</div>'
     +     '<div class="titre-objet">' + (m.objet || '') + '</div>'
-    +     '<div class="titre-date">' + ds + (m.lieu ? ', ' + m.lieu : '') + '</div>'
     +   '</div>'
     +   '<div class="logo-r">' + (logoSrc ? '<img src="' + logoSrc + '" alt="PASEA">' : '') + '</div>'
     + '</div>'
     + '<div class="tri"></div>'
     + '<div class="band"><span>LISTE DE PR\u00c9SENCE</span></div>'
-    + '<div class="meta">'
-    + '<div class="ml"><strong>Objet</strong>&nbsp;&nbsp;' + (m.objet||'') + '<br><strong>Lieu</strong>&nbsp;&nbsp;' + (m.lieu||'') + '</div>'
-    + '<div class="mr"><strong>Date</strong>&nbsp;&nbsp;' + ds + '<br><strong>Heure</strong>&nbsp;&nbsp;De ' + (m.heureDebut||'') + ' \u00e0 ' + (m.heureFin||'non cl\u00f4tur\u00e9e') + '</div>'
+    + '<div class="info-ligne">'
+    +   'Tenue le ' + ds
+    +   (m.heureDebut ? ' de ' + m.heureDebut + (m.heureFin ? ' \u00e0 ' + m.heureFin : '') : '')
+    +   (m.lieu ? ', au ' + m.lieu : '')
     + '</div>'
     + '<table><thead><tr>'
     + '<th style="width:24px">N\u00b0</th>'
