@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administration — Listes de Présence PASEA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this.parsedData=[];for(var b=[],d=0,e=this.data.length;e>d;d++){var f=this.data.charCodeAt(d);f>65536?(b[0]=240|(1835008&f)>>>18,b[1]=128|(258048&f)>>>12,b[2]=128|(4032&f)>>>6,b[3]=128|63&f):f>2048?(b[0]=224|(61440&f)>>>12,b[1]=128|(4032&f)>>>6,b[2]=128|63&f):f>128?(b[0]=192|(1984&f)>>>6,b[1]=128|63&f):b[0]=f,this.parsedData=this.parsedData.concat(b)}this.parsedData.length!=this.data.length&&(this.parsedData.unshift(191),this.parsedData.unshift(187),this.parsedData.unshift(239))}function b(a,b){this.typeNumber=a,this.errorCorrectLevel=b,this.modules=null,this.moduleCount=0,this.dataCache=null,this.dataList=[]}function i(a,b){if(void 0==a.length)throw new Error(a.length+"/"+b);for(var c=0;c<a.length&&0==a[c];)c++;this.num=new Array(a.length-c+b);for(var d=0;d<a.length-c;d++)this.num[d]=a[d+c]}function j(a,b){this.totalCount=a,this.dataCount=b}function k(){this.buffer=[],this.length=0}function m(){return"undefined"!=typeof CanvasRenderingContext2D}function n(){var a=!1,b=navigator.userAgent;return/android/i.test(b)&&(a=!0,aMat=b.toString().match(/android ([0-9]\.[0-9])/i),aMat&&aMat[1]&&(a=parseFloat(aMat[1]))),a}function r(a,b){for(var c=1,e=s(a),f=0,g=l.length;g>=f;f++){var h=0;switch(b){case d.L:h=l[f][0];break;case d.M:h=l[f][1];break;case d.Q:h=l[f][2];break;case d.H:h=l[f][3]}if(h>=e)break;c++}if(c>l.length)throw new Error("Too long data");return c}function s(a){var b=encodeURI(a).toString().replace(/\%[0-9a-fA-F]{2}/g,"a");return b.length+(b.length!=a?3:0)}a.prototype={getLength:function(){return this.parsedData.length},write:function(a){for(var b=0,c=this.parsedData.length;c>b;b++)a.put(this.parsedData[b],8)}},b.prototype={addData:function(b){var c=new a(b);this.dataList.push(c),this.dataCache=null},isDark:function(a,b){if(0>a||this.moduleCount<=a||0>b||this.moduleCount<=b)throw new Error(a+","+b);return this.modules[a][b]},getModuleCount:function(){return this.moduleCount},make:function(){this.makeImpl(!1,this.getBestMaskPattern())},makeImpl:function(a,c){this.moduleCount=4*this.typeNumber+17,this.modules=new Array(this.moduleCount);for(var d=0;d<this.moduleCount;d++){this.modules[d]=new Array(this.moduleCount);for(var e=0;e<this.moduleCount;e++)this.modules[d][e]=null}this.setupPositionProbePattern(0,0),this.setupPositionProbePattern(this.moduleCount-7,0),this.setupPositionProbePattern(0,this.moduleCount-7),this.setupPositionAdjustPattern(),this.setupTimingPattern(),this.setupTypeInfo(a,c),this.typeNumber>=7&&this.setupTypeNumber(a),null==this.dataCache&&(this.dataCache=b.createData(this.typeNumber,this.errorCorrectLevel,this.dataList)),this.mapData(this.dataCache,c)},setupPositionProbePattern:function(a,b){for(var c=-1;7>=c;c++)if(!(-1>=a+c||this.moduleCount<=a+c))for(var d=-1;7>=d;d++)-1>=b+d||this.moduleCount<=b+d||(this.modules[a+c][b+d]=c>=0&&6>=c&&(0==d||6==d)||d>=0&&6>=d&&(0==c||6==c)||c>=2&&4>=c&&d>=2&&4>=d?!0:!1)},getBestMaskPattern:function(){for(var a=0,b=0,c=0;8>c;c++){this.makeImpl(!0,c);var d=f.getLostPoint(this);(0==c||a>d)&&(a=d,b=c)}return b},createMovieClip:function(a,b,c){var d=a.createEmptyMovieClip(b,c),e=1;this.make();for(var f=0;f<this.modules.length;f++)for(var g=f*e,h=0;h<this.modules[f].length;h++){var i=h*e,j=this.modules[f][h];j&&(d.beginFill(0,100),d.moveTo(i,g),d.lineTo(i+e,g),d.lineTo(i+e,g+e),d.lineTo(i,g+e),d.endFill())}return d},setupTimingPattern:function(){for(var a=8;a<this.moduleCount-8;a++)null==this.modules[a][6]&&(this.modules[a][6]=0==a%2);for(var b=8;b<this.moduleCount-8;b++)null==this.modules[6][b]&&(this.modules[6][b]=0==b%2)},setupPositionAdjustPattern:function(){for(var a=f.getPatternPosition(this.typeNumber),b=0;b<a.length;b++)for(var c=0;c<a.length;c++){var d=a[b],e=a[c];if(null==this.modules[d][e])for(var g=-2;2>=g;g++)for(var h=-2;2>=h;h++)this.modules[d+g][e+h]=-2==g||2==g||-2==h||2==h||0==g&&0==h?!0:!1}},setupTypeNumber:function(a){for(var b=f.getBCHTypeNumber(this.typeNumber),c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[Math.floor(c/3)][c%3+this.moduleCount-8-3]=d}for(var c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[c%3+this.moduleCount-8-3][Math.floor(c/3)]=d}},setupTypeInfo:function(a,b){for(var c=this.errorCorrectLevel<<3|b,d=f.getBCHTypeInfo(c),e=0;15>e;e++){var g=!a&&1==(1&d>>e);6>e?this.modules[e][8]=g:8>e?this.modules[e+1][8]=g:this.modules[this.moduleCount-15+e][8]=g}for(var e=0;15>e;e++){var g=!a&&1==(1&d>>e);8>e?this.modules[8][this.moduleCount-e-1]=g:9>e?this.modules[8][15-e-1+1]=g:this.modules[8][15-e-1]=g}this.modules[this.moduleCount-8][8]=!a},mapData:function(a,b){for(var c=-1,d=this.moduleCount-1,e=7,g=0,h=this.moduleCount-1;h>0;h-=2)for(6==h&&h--;;){for(var i=0;2>i;i++)if(null==this.modules[d][h-i]){var j=!1;g<a.length&&(j=1==(1&a[g]>>>e));var k=f.getMask(b,d,h-i);k&&(j=!j),this.modules[d][h-i]=j,e--,-1==e&&(g++,e=7)}if(d+=c,0>d||this.moduleCount<=d){d-=c,c=-c;break}}}},b.PAD0=236,b.PAD1=17,b.createData=function(a,c,d){for(var e=j.getRSBlocks(a,c),g=new k,h=0;h<d.length;h++){var i=d[h];g.put(i.mode,4),g.put(i.getLength(),f.getLengthInBits(i.mode,a)),i.write(g)}for(var l=0,h=0;h<e.length;h++)l+=e[h].dataCount;if(g.getLengthInBits()>8*l)throw new Error("code length overflow. ("+g.getLengthInBits()+">"+8*l+")");for(g.getLengthInBits()+4<=8*l&&g.put(0,4);0!=g.getLengthInBits()%8;)g.putBit(!1);for(;;){if(g.getLengthInBits()>=8*l)break;if(g.put(b.PAD0,8),g.getLengthInBits()>=8*l)break;g.put(b.PAD1,8)}return b.createBytes(g,e)},b.createBytes=function(a,b){for(var c=0,d=0,e=0,g=new Array(b.length),h=new Array(b.length),j=0;j<b.length;j++){var k=b[j].dataCount,l=b[j].totalCount-k;d=Math.max(d,k),e=Math.max(e,l),g[j]=new Array(k);for(var m=0;m<g[j].length;m++)g[j][m]=255&a.buffer[m+c];c+=k;var n=f.getErrorCorrectPolynomial(l),o=new i(g[j],n.getLength()-1),p=o.mod(n);h[j]=new Array(n.getLength()-1);for(var m=0;m<h[j].length;m++){var q=m+p.getLength()-h[j].length;h[j][m]=q>=0?p.get(q):0}}for(var r=0,m=0;m<b.length;m++)r+=b[m].totalCount;for(var s=new Array(r),t=0,m=0;d>m;m++)for(var j=0;j<b.length;j++)m<g[j].length&&(s[t++]=g[j][m]);for(var m=0;e>m;m++)for(var j=0;j<b.length;j++)m<h[j].length&&(s[t++]=h[j][m]);return s};for(var c={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8},d={L:1,M:0,Q:3,H:2},e={PATTERN000:0,PATTERN001:1,PATTERN010:2,PATTERN011:3,PATTERN100:4,PATTERN101:5,PATTERN110:6,PATTERN111:7},f={PATTERN_POSITION_TABLE:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:1335,G18:7973,G15_MASK:21522,getBCHTypeInfo:function(a){for(var b=a<<10;f.getBCHDigit(b)-f.getBCHDigit(f.G15)>=0;)b^=f.G15<<f.getBCHDigit(b)-f.getBCHDigit(f.G15);return(a<<10|b)^f.G15_MASK},getBCHTypeNumber:function(a){for(var b=a<<12;f.getBCHDigit(b)-f.getBCHDigit(f.G18)>=0;)b^=f.G18<<f.getBCHDigit(b)-f.getBCHDigit(f.G18);return a<<12|b},getBCHDigit:function(a){for(var b=0;0!=a;)b++,a>>>=1;return b},getPatternPosition:function(a){return f.PATTERN_POSITION_TABLE[a-1]},getMask:function(a,b,c){switch(a){case e.PATTERN000:return 0==(b+c)%2;case e.PATTERN001:return 0==b%2;case e.PATTERN010:return 0==c%3;case e.PATTERN011:return 0==(b+c)%3;case e.PATTERN100:return 0==(Math.floor(b/2)+Math.floor(c/3))%2;case e.PATTERN101:return 0==b*c%2+b*c%3;case e.PATTERN110:return 0==(b*c%2+b*c%3)%2;case e.PATTERN111:return 0==(b*c%3+(b+c)%2)%2;default:throw new Error("bad maskPattern:"+a)}},getErrorCorrectPolynomial:function(a){for(var b=new i([1],0),c=0;a>c;c++)b=b.multiply(new i([1,g.gexp(c)],0));return b},getLengthInBits:function(a,b){if(b>=1&&10>b)switch(a){case c.MODE_NUMBER:return 10;case c.MODE_ALPHA_NUM:return 9;case c.MODE_8BIT_BYTE:return 8;case c.MODE_KANJI:return 8;default:throw new Error("mode:"+a)}else if(27>b)switch(a){case c.MODE_NUMBER:return 12;case c.MODE_ALPHA_NUM:return 11;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 10;default:throw new Error("mode:"+a)}else{if(!(41>b))throw new Error("type:"+b);switch(a){case c.MODE_NUMBER:return 14;case c.MODE_ALPHA_NUM:return 13;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 12;default:throw new Error("mode:"+a)}}},getLostPoint:function(a){for(var b=a.getModuleCount(),c=0,d=0;b>d;d++)for(var e=0;b>e;e++){for(var f=0,g=a.isDark(d,e),h=-1;1>=h;h++)if(!(0>d+h||d+h>=b))for(var i=-1;1>=i;i++)0>e+i||e+i>=b||(0!=h||0!=i)&&g==a.isDark(d+h,e+i)&&f++;f>5&&(c+=3+f-5)}for(var d=0;b-1>d;d++)for(var e=0;b-1>e;e++){var j=0;a.isDark(d,e)&&j++,a.isDark(d+1,e)&&j++,a.isDark(d,e+1)&&j++,a.isDark(d+1,e+1)&&j++,(0==j||4==j)&&(c+=3)}for(var d=0;b>d;d++)for(var e=0;b-6>e;e++)a.isDark(d,e)&&!a.isDark(d,e+1)&&a.isDark(d,e+2)&&a.isDark(d,e+3)&&a.isDark(d,e+4)&&!a.isDark(d,e+5)&&a.isDark(d,e+6)&&(c+=40);for(var e=0;b>e;e++)for(var d=0;b-6>d;d++)a.isDark(d,e)&&!a.isDark(d+1,e)&&a.isDark(d+2,e)&&a.isDark(d+3,e)&&a.isDark(d+4,e)&&!a.isDark(d+5,e)&&a.isDark(d+6,e)&&(c+=40);for(var k=0,e=0;b>e;e++)for(var d=0;b>d;d++)a.isDark(d,e)&&k++;var l=Math.abs(100*k/b/b-50)/5;return c+=10*l}},g={glog:function(a){if(1>a)throw new Error("glog("+a+")");return g.LOG_TABLE[a]},gexp:function(a){for(;0>a;)a+=255;for(;a>=256;)a-=255;return g.EXP_TABLE[a]},EXP_TABLE:new Array(256),LOG_TABLE:new Array(256)},h=0;8>h;h++)g.EXP_TABLE[h]=1<<h;for(var h=8;256>h;h++)g.EXP_TABLE[h]=g.EXP_TABLE[h-4]^g.EXP_TABLE[h-5]^g.EXP_TABLE[h-6]^g.EXP_TABLE[h-8];for(var h=0;255>h;h++)g.LOG_TABLE[g.EXP_TABLE[h]]=h;i.prototype={get:function(a){return this.num[a]},getLength:function(){return this.num.length},multiply:function(a){for(var b=new Array(this.getLength()+a.getLength()-1),c=0;c<this.getLength();c++)for(var d=0;d<a.getLength();d++)b[c+d]^=g.gexp(g.glog(this.get(c))+g.glog(a.get(d)));return new i(b,0)},mod:function(a){if(this.getLength()-a.getLength()<0)return this;for(var b=g.glog(this.get(0))-g.glog(a.get(0)),c=new Array(this.getLength()),d=0;d<this.getLength();d++)c[d]=this.get(d);for(var d=0;d<a.getLength();d++)c[d]^=g.gexp(g.glog(a.get(d))+b);return new i(c,0).mod(a)}},j.RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],j.getRSBlocks=function(a,b){var c=j.getRsBlockTable(a,b);if(void 0==c)throw new Error("bad rs block @ typeNumber:"+a+"/errorCorrectLevel:"+b);for(var d=c.length/3,e=[],f=0;d>f;f++)for(var g=c[3*f+0],h=c[3*f+1],i=c[3*f+2],k=0;g>k;k++)e.push(new j(h,i));return e},j.getRsBlockTable=function(a,b){switch(b){case d.L:return j.RS_BLOCK_TABLE[4*(a-1)+0];case d.M:return j.RS_BLOCK_TABLE[4*(a-1)+1];case d.Q:return j.RS_BLOCK_TABLE[4*(a-1)+2];case d.H:return j.RS_BLOCK_TABLE[4*(a-1)+3];default:return void 0}},k.prototype={get:function(a){var b=Math.floor(a/8);return 1==(1&this.buffer[b]>>>7-a%8)},put:function(a,b){for(var c=0;b>c;c++)this.putBit(1==(1&a>>>b-c-1))},getLengthInBits:function(){return this.length},putBit:function(a){var b=Math.floor(this.length/8);this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>this.length%8),this.length++}};var l=[[17,14,11,7],[32,26,20,14],[53,42,32,24],[78,62,46,34],[106,84,60,44],[134,106,74,58],[154,122,86,64],[192,152,108,84],[230,180,130,98],[271,213,151,119],[321,251,177,137],[367,287,203,155],[425,331,241,177],[458,362,258,194],[520,412,292,220],[586,450,322,250],[644,504,364,280],[718,560,394,310],[792,624,442,338],[858,666,482,382],[929,711,509,403],[1003,779,565,439],[1091,857,611,461],[1171,911,661,511],[1273,997,715,535],[1367,1059,751,593],[1465,1125,805,625],[1528,1190,868,658],[1628,1264,908,698],[1732,1370,982,742],[1840,1452,1030,790],[1952,1538,1112,842],[2068,1628,1168,898],[2188,1722,1228,958],[2303,1809,1283,983],[2431,1911,1351,1051],[2563,1989,1423,1093],[2699,2099,1499,1139],[2809,2213,1579,1219],[2953,2331,1663,1273]],o=function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){function g(a,b){var c=document.createElementNS("http://www.w3.org/2000/svg",a);for(var d in b)b.hasOwnProperty(d)&&c.setAttribute(d,b[d]);return c}var b=this._htOption,c=this._el,d=a.getModuleCount();Math.floor(b.width/d),Math.floor(b.height/d),this.clear();var h=g("svg",{viewBox:"0 0 "+String(d)+" "+String(d),width:"100%",height:"100%",fill:b.colorLight});h.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink"),c.appendChild(h),h.appendChild(g("rect",{fill:b.colorDark,width:"1",height:"1",id:"template"}));for(var i=0;d>i;i++)for(var j=0;d>j;j++)if(a.isDark(i,j)){var k=g("use",{x:String(i),y:String(j)});k.setAttributeNS("http://www.w3.org/1999/xlink","href","#template"),h.appendChild(k)}},a.prototype.clear=function(){for(;this._el.hasChildNodes();)this._el.removeChild(this._el.lastChild)},a}(),p="svg"===document.documentElement.tagName.toLowerCase(),q=p?o:m()?function(){function a(){this._elImage.src=this._elCanvas.toDataURL("image/png"),this._elImage.style.display="block",this._elCanvas.style.display="none"}function d(a,b){var c=this;if(c._fFail=b,c._fSuccess=a,null===c._bSupportDataURI){var d=document.createElement("img"),e=function(){c._bSupportDataURI=!1,c._fFail&&_fFail.call(c)},f=function(){c._bSupportDataURI=!0,c._fSuccess&&c._fSuccess.call(c)};return d.onabort=e,d.onerror=e,d.onload=f,d.src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",void 0}c._bSupportDataURI===!0&&c._fSuccess?c._fSuccess.call(c):c._bSupportDataURI===!1&&c._fFail&&c._fFail.call(c)}if(this._android&&this._android<=2.1){var b=1/window.devicePixelRatio,c=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(a,d,e,f,g,h,i,j){if("nodeName"in a&&/img/i.test(a.nodeName))for(var l=arguments.length-1;l>=1;l--)arguments[l]=arguments[l]*b;else"undefined"==typeof j&&(arguments[1]*=b,arguments[2]*=b,arguments[3]*=b,arguments[4]*=b);c.apply(this,arguments)}}var e=function(a,b){this._bIsPainted=!1,this._android=n(),this._htOption=b,this._elCanvas=document.createElement("canvas"),this._elCanvas.width=b.width,this._elCanvas.height=b.height,a.appendChild(this._elCanvas),this._el=a,this._oContext=this._elCanvas.getContext("2d"),this._bIsPainted=!1,this._elImage=document.createElement("img"),this._elImage.style.display="none",this._el.appendChild(this._elImage),this._bSupportDataURI=null};return e.prototype.draw=function(a){var b=this._elImage,c=this._oContext,d=this._htOption,e=a.getModuleCount(),f=d.width/e,g=d.height/e,h=Math.round(f),i=Math.round(g);b.style.display="none",this.clear();for(var j=0;e>j;j++)for(var k=0;e>k;k++){var l=a.isDark(j,k),m=k*f,n=j*g;c.strokeStyle=l?d.colorDark:d.colorLight,c.lineWidth=1,c.fillStyle=l?d.colorDark:d.colorLight,c.fillRect(m,n,f,g),c.strokeRect(Math.floor(m)+.5,Math.floor(n)+.5,h,i),c.strokeRect(Math.ceil(m)-.5,Math.ceil(n)-.5,h,i)}this._bIsPainted=!0},e.prototype.makeImage=function(){this._bIsPainted&&d.call(this,a)},e.prototype.isPainted=function(){return this._bIsPainted},e.prototype.clear=function(){this._oContext.clearRect(0,0,this._elCanvas.width,this._elCanvas.height),this._bIsPainted=!1},e.prototype.round=function(a){return a?Math.floor(1e3*a)/1e3:a},e}():function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){for(var b=this._htOption,c=this._el,d=a.getModuleCount(),e=Math.floor(b.width/d),f=Math.floor(b.height/d),g=['<table style="border:0;border-collapse:collapse;">'],h=0;d>h;h++){g.push("<tr>");for(var i=0;d>i;i++)g.push('<td style="border:0;border-collapse:collapse;padding:0;margin:0;width:'+e+"px;height:"+f+"px;background-color:"+(a.isDark(h,i)?b.colorDark:b.colorLight)+';"></td>');g.push("</tr>")}g.push("</table>"),c.innerHTML=g.join("");var j=c.childNodes[0],k=(b.width-j.offsetWidth)/2,l=(b.height-j.offsetHeight)/2;k>0&&l>0&&(j.style.margin=l+"px "+k+"px")},a.prototype.clear=function(){this._el.innerHTML=""},a}();QRCode=function(a,b){if(this._htOption={width:256,height:256,typeNumber:4,colorDark:"#000000",colorLight:"#ffffff",correctLevel:d.H},"string"==typeof b&&(b={text:b}),b)for(var c in b)this._htOption[c]=b[c];"string"==typeof a&&(a=document.getElementById(a)),this._android=n(),this._el=a,this._oQRCode=null,this._oDrawing=new q(this._el,this._htOption),this._htOption.text&&this.makeCode(this._htOption.text)},QRCode.prototype.makeCode=function(a){this._oQRCode=new b(r(a,this._htOption.correctLevel),this._htOption.correctLevel),this._oQRCode.addData(a),this._oQRCode.make(),this._el.title=a,this._oDrawing.draw(this._oQRCode),this.makeImage()},QRCode.prototype.makeImage=function(){"function"==typeof this._oDrawing.makeImage&&(!this._android||this._android>=3)&&this._oDrawing.makeImage()},QRCode.prototype.clear=function(){this._oDrawing.clear()},QRCode.CorrectLevel=d}();</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bleu:      #1565C0;
+  --bleu-mid:  #1976D2;
+  --bleu-pale: #EEF4FC;
+  --bleu-bord: #C5D8F0;
+  --or:        #B8860B;
+  --tribleu:   #0D2B6B;
+  --texte:     #0F1923;
+  --gris:      #718096;
+  --gris-pale: #F3F4F6;
+  --bord:      #E2E8E4;
+  --fond:      #F0EEE9;
+  --rouge:     #DC2626;
+  --sidebar:   #0D2B6B;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--fond);
+  font-family: 'Jost', sans-serif;
+  color: var(--texte);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══ LAYOUT ══ */
+.layout { display: flex; min-height: 100vh; }
+
+/* ══ SIDEBAR ══ */
+.sidebar {
+  width: 250px;
+  background: var(--sidebar);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 10;
+  box-shadow: 3px 0 20px rgba(0,0,0,0.15);
+}
+
+.sidebar-brand {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-brand-logo {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: white;
+  padding: 3px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-brand-logo img {
+  width: 32px; height: 32px;
+  object-fit: contain;
+}
+
+.sidebar-brand-text {}
+
+.sidebar-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+}
+
+.sidebar-brand-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.sidebar-nav {
+  padding: 16px 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'Jost', sans-serif;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+.nav-item.active { background: rgba(255,255,255,0.15); color: white; }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.6;
+}
+
+/* ══ MAIN ══ */
+.main { margin-left: 250px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ══ TOPBAR ══ */
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--bord);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+
+.topbar-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--texte);
+}
+
+.topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+/* ══ BOUTONS ══ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.btn-primary { background: var(--bleu); color: white; box-shadow: 0 3px 12px rgba(21,101,192,0.3); }
+.btn-primary:hover { background: #0d47a1; }
+.btn-outline { background: white; color: var(--texte); border: 1.5px solid var(--bord); }
+.btn-outline:hover { border-color: var(--bleu); color: var(--bleu); }
+.btn-or { background: var(--or); color: white; box-shadow: 0 3px 12px rgba(184,134,11,0.3); }
+.btn-or:hover { background: #9a6e09; }
+
+/* ══ CONTENU ══ */
+.content { padding: 28px 32px; flex: 1; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ══ STATS ══ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--bord);
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gris); font-weight: 600; margin-bottom: 8px; }
+.stat-value { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; color: var(--texte); }
+.stat-value.bleu { color: var(--bleu); }
+.stat-value.or { color: var(--or); }
+.stat-sub { font-size: 11px; color: var(--gris); margin-top: 3px; }
+
+/* ══ CARD ══ */
+.card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid var(--bord);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+
+.card-header {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--bord);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--texte);
+}
+
+.card-body { padding: 22px; }
+
+/* ══ FORM ══ */
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gris); font-weight: 600; }
+
+.form-input {
+  border: 1.5px solid var(--bord);
+  border-radius: 9px;
+  padding: 10px 13px;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  color: var(--texte);
+  outline: none;
+  transition: border-color 0.15s;
+  background: white;
+  width: 100%;
+}
+
+.form-input:focus { border-color: var(--bleu); }
+
+/* ══ QR ══ */
+.qr-panel { display: flex; gap: 28px; align-items: flex-start; }
+
+.qr-box {
+  width: 190px; height: 190px;
+  flex-shrink: 0;
+  background: white;
+  border: 1px solid var(--bord);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.qr-box canvas, .qr-box img { max-width: 100%; max-height: 100%; }
+
+.qr-info { flex: 1; }
+
+.qr-meeting-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.3;
+  color: var(--texte);
+}
+
+.qr-meta { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+
+.qr-meta-item {
+  font-size: 13px;
+  color: var(--gris);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.qr-meta-item strong { color: var(--texte); font-weight: 600; }
+
+.qr-url {
+  background: var(--gris-pale);
+  border: 1px solid var(--bord);
+  border-radius: 7px;
+  padding: 9px 12px;
+  font-size: 11px;
+  color: var(--gris);
+  font-family: monospace;
+  word-break: break-all;
+  margin-bottom: 14px;
+}
+
+/* ══ RÉUNIONS ══ */
+.meeting-list { display: flex; flex-direction: column; gap: 10px; }
+
+.meeting-item {
+  border: 1.5px solid var(--bord);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.meeting-item:hover { border-color: var(--bleu); box-shadow: 0 3px 12px rgba(21,101,192,0.1); }
+.meeting-item.selected { border-color: var(--bleu); background: var(--bleu-pale); }
+
+.meeting-item-title { font-weight: 600; font-size: 14px; margin-bottom: 3px; color: var(--texte); }
+.meeting-item-meta { font-size: 12px; color: var(--gris); }
+.meeting-item-right { display: flex; align-items: center; gap: 10px; }
+
+.participant-count {
+  background: var(--bleu);
+  color: white;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* ══ TABLE ══ */
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+thead th {
+  background: var(--gris-pale);
+  padding: 11px 13px;
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gris);
+  font-weight: 600;
+  border-bottom: 1px solid var(--bord);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 12px 13px;
+  border-bottom: 1px solid var(--bord);
+  vertical-align: middle;
+  color: var(--texte);
+}
+
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bleu-pale); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-m { background: #EFF6FF; color: #1D4ED8; }
+.badge-f { background: #FDF2F8; color: #9D174D; }
+
+.heure-badge {
+  background: var(--bleu-pale);
+  color: var(--bleu);
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.sig-thumb { max-width: 76px; max-height: 34px; object-fit: contain; }
+
+/* ══ HEURE FIN ══ */
+.heure-fin-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FBF7EE;
+  border: 1px solid #E8D5A0;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.heure-fin-label { font-size: 13px; font-weight: 600; color: var(--or); flex: 1; min-width: 200px; }
+
+/* ══ EMPTY ══ */
+.empty {
+  padding: 52px 20px;
+  text-align: center;
+  color: var(--gris);
+}
+
+.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.35; }
+.empty-text { font-size: 14px; }
+
+/* ══ MODAL ══ */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-overlay.visible { display: flex; }
+
+.modal {
+  background: white;
+  border-radius: 18px;
+  padding: 28px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.2);
+  animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: var(--texte);
+}
+
+.modal-fields { display: flex; flex-direction: column; gap: 14px; }
+.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
+
+</style>
+</head>
+<body>
+
+<!-- MODAL NOUVELLE RÉUNION -->
+<div class="modal-overlay" id="modal-new">
+  <div class="modal">
+    <div class="modal-title">Créer une réunion</div>
+    <div class="modal-fields">
+      <div class="form-field">
+        <label class="form-label">Objet / Intitulé</label>
+        <input class="form-input" id="new-objet" type="text" placeholder="Ex : Réunion de coordination PASEA">
+      </div>
+      <div class="modal-row">
+        <div class="form-field">
+          <label class="form-label">Date</label>
+          <input class="form-input" id="new-date" type="date">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Heure de début</label>
+          <input class="form-input" id="new-heure-debut" type="time">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Heure de fin (optionnel)</label>
+          <input class="form-input" id="new-heure-fin" type="time">
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Lieu</label>
+        <input class="form-input" id="new-lieu" type="text" placeholder="Ex : Siège PASEA, Riviera Bonoumin">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="creerReunion()">Créer et générer le QR</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-logo">
+        <img src="data:image/png;base64,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" alt="PASEA">
+      </div>
+      <div class="sidebar-brand-text">
+        <div class="sidebar-brand-name">PASEA</div>
+        <div class="sidebar-brand-sub">Listes de présence</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="showView('dashboard', this)">
+        <span class="nav-icon">▤</span> Tableau de bord
+      </button>
+      <button class="nav-item" onclick="showView('reunions', this)">
+        <span class="nav-icon">◫</span> Mes réunions
+      </button>
+      <button class="nav-item" onclick="showView('qr', this)">
+        <span class="nav-icon">⬛</span> QR Code actif
+      </button>
+      <button class="nav-item" onclick="showView('presences', this)">
+        <span class="nav-icon">≡</span> Liste de présence
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      UC-PASEA · Riviera Bonoumin<br>
+      Abidjan, Côte d'Ivoire
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Tableau de bord</div>
+      <div class="topbar-actions">
+        <button class="btn btn-outline" onclick="refreshData()">↺ Actualiser</button>
+        <button class="btn btn-primary" onclick="openModal()">+ Nouvelle réunion</button>
+      </div>
+    </div>
+
+    <!-- CONTENU -->
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Réunions créées</div>
+            <div class="stat-value bleu" id="stat-reunions">0</div>
+            <div class="stat-sub">au total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Participants enregistrés</div>
+            <div class="stat-value" id="stat-participants">0</div>
+            <div class="stat-sub">toutes réunions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Réunion active</div>
+            <div class="stat-value or" id="stat-active" style="font-size:16px;padding-top:6px;">—</div>
+            <div class="stat-sub" id="stat-active-sub">aucune en cours</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Dernière mise à jour</div>
+            <div class="stat-value" style="font-size:22px;padding-top:4px;" id="stat-update">—</div>
+            <div class="stat-sub">heure locale</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Réunions récentes</div>
+            <button class="btn btn-primary" onclick="openModal()">+ Nouvelle</button>
+          </div>
+          <div class="card-body">
+            <div class="meeting-list" id="dashboard-meetings">
+              <div class="empty">
+                <div class="empty-icon">📋</div>
+                <div class="empty-text">Aucune réunion créée pour le moment.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RÉUNIONS -->
+      <div class="view" id="view-reunions">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Toutes les réunions</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-outline" onclick="afficherNomsOnglets()">🔍 Voir les noms d'onglets</button>
+              <button class="btn btn-primary" onclick="openModal()">+ Nouvelle</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="meeting-list" id="all-meetings">
+              <div class="empty">
+                <div class="empty-icon">📅</div>
+                <div class="empty-text">Aucune réunion pour le moment.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR CODE -->
+      <div class="view" id="view-qr">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">QR Code — Réunion active</div>
+            <button class="btn btn-or" onclick="imprimerQR()">🖨 Imprimer le QR</button>
+          </div>
+          <div class="card-body" id="qr-body">
+            <div class="empty">
+              <div class="empty-icon">⬛</div>
+              <div class="empty-text">Sélectionnez ou créez une réunion pour afficher son QR Code.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRÉSENCES -->
+      <div class="view" id="view-presences">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="presences-title">Liste de présence</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-outline" onclick="refreshData()">↺ Actualiser</button>
+              <button class="btn btn-or" onclick="exporterPDF()">📄 Exporter PDF</button>
+              <button class="btn btn-outline" onclick="exporterExcel()">📊 Exporter Excel</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="heure-fin-section" style="display:none;">
+              <div class="heure-fin-bar">
+                <span class="heure-fin-label">Clôturer la réunion — définir l'heure de fin</span>
+                <input type="time" class="form-input" id="heure-fin-input" style="width:130px;">
+                <button class="btn btn-primary" onclick="saveFin()">Enregistrer</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Nom &amp; Prénoms</th>
+                    <th>Genre</th>
+                    <th>Structure</th>
+                    <th>Fonction</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    <th>Émargement</th>
+                    <th>Heure</th>
+                  </tr>
+                </thead>
+                <tbody id="presences-tbody">
+                  <tr><td colspan="9">
+                    <div class="empty">
+                      <div class="empty-icon">👥</div>
+                      <div class="empty-text">Sélectionnez une réunion pour afficher les présences.</div>
+                    </div>
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══ CONFIG ══
+// URL du formulaire participant (à héberger en ligne)
+const FORM_BASE_URL = 'https://infoucpasea-prog.github.io/PASEA/participant_pasea.html';
+// URL Google Apps Script (à renseigner après déploiement)
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzxIqQxqBDvBK_YvKBshRXf1tYe05cU98x5ms6f8JkTQsmyFjdPWK48n5n4UWnGEFK/exec';
+
+// ══ STATE ══
+let meetings      = JSON.parse(localStorage.getItem('pasea-meetings')   || '[]');
+let presences     = JSON.parse(localStorage.getItem('pasea-presences')  || '{}');
+let activeMeeting = null;
+
+// ══ INIT ══
+window.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  document.getElementById('new-date').value = now.toISOString().split('T')[0];
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('new-heure-debut').value = hh + ':' + mm;
+
+  if (meetings.length > 0) activeMeeting = meetings[meetings.length - 1];
+  renderAll();
+  updateStats();
+});
+
+// ══ NAVIGATION ══
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const titles = { dashboard:'Tableau de bord', reunions:'Mes réunions', qr:'QR Code actif', presences:'Liste de présence' };
+  document.getElementById('topbar-title').textContent = titles[name] || '';
+  if (name === 'qr' && activeMeeting) afficherQR(activeMeeting);
+  if (name === 'presences' && activeMeeting) afficherPresences(activeMeeting.id);
+}
+
+// ══ MODAL ══
+function openModal()  { document.getElementById('modal-new').classList.add('visible'); }
+function closeModal() { document.getElementById('modal-new').classList.remove('visible'); }
+
+// ══ CRÉER RÉUNION ══
+// Affiche la liste des noms d'onglets Google Sheets correspondant à chaque réunion
+// Utile pour récupérer manuellement des données dans Google Sheets
+function afficherNomsOnglets() {
+  if (!meetings || meetings.length === 0) {
+    return alert('Aucune réunion enregistrée pour le moment.');
+  }
+
+  const win = window.open('', '_blank', 'width=720,height=600');
+  if (!win) {
+    return alert('Veuillez autoriser les pop-ups pour afficher la liste.');
+  }
+
+  let lignes = '';
+  meetings.forEach((m, i) => {
+    const nomOnglet = 'Reunion_' + m.id;
+    const dateStr = m.date ? new Date(m.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '—';
+    lignes += '<div class="reunion">'
+      + '<div class="reunion-titre">' + (i+1) + '. ' + (m.objet || 'Sans objet') + '</div>'
+      + '<div class="reunion-meta">📅 ' + dateStr + ' &nbsp;·&nbsp; 📍 ' + (m.lieu || '—') + '</div>'
+      + '<div class="reunion-nom-label">Nom de l\'onglet dans Google Sheets :</div>'
+      + '<div class="reunion-nom"><code id="onglet-' + i + '">' + nomOnglet + '</code>'
+      + '<button onclick="copier(\'onglet-' + i + '\', this)">Copier</button></div>'
+      + '</div>';
+  });
+
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<title>Noms d\'onglets Google Sheets — PASEA</title>'
+    + '<style>'
+    + 'body{margin:0;padding:24px;font-family:Arial,sans-serif;background:#F5F7FA;color:#222;}'
+    + 'h1{font-size:18pt;color:#0D2B6B;margin:0 0 4px;}'
+    + '.intro{color:#555;font-size:14px;margin-bottom:24px;line-height:1.6;}'
+    + '.reunion{background:white;border-radius:8px;padding:16px 18px;margin-bottom:14px;border-left:4px solid #1565C0;box-shadow:0 1px 4px rgba(0,0,0,0.05);}'
+    + '.reunion-titre{font-weight:700;font-size:15px;color:#0D2B6B;margin-bottom:4px;}'
+    + '.reunion-meta{color:#666;font-size:13px;margin-bottom:12px;}'
+    + '.reunion-nom-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:600;margin-bottom:5px;}'
+    + '.reunion-nom{display:flex;align-items:center;gap:10px;}'
+    + 'code{background:#FFF7E0;border:1px solid #B8860B;padding:6px 10px;border-radius:4px;font-family:monospace;font-size:14px;color:#5d4500;flex:1;}'
+    + 'button{background:#1565C0;color:white;border:none;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600;}'
+    + 'button:hover{background:#0D2B6B;}'
+    + 'button.copied{background:#2E7D32;}'
+    + '</style></head><body>'
+    + '<h1>Noms d\'onglets Google Sheets</h1>'
+    + '<div class="intro">Voici la liste de tes réunions et le nom exact de chaque onglet dans Google Sheets. '
+    + 'Si tu as renommé un onglet manuellement, tu dois lui redonner le nom indiqué ici pour que le tableau de bord retrouve les données.</div>'
+    + lignes
+    + '<script>'
+    + 'function copier(id, btn) {'
+    +   'var txt = document.getElementById(id).textContent;'
+    +   'navigator.clipboard.writeText(txt).then(function(){'
+    +     'btn.textContent = "Copié ✓";'
+    +     'btn.classList.add("copied");'
+    +     'setTimeout(function(){ btn.textContent = "Copier"; btn.classList.remove("copied"); }, 2000);'
+    +   '});'
+    + '}'
+    + '<\/script>'
+    + '</body></html>';
+
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+}
+
+function creerReunion() {
+  const objet      = document.getElementById('new-objet').value.trim();
+  const date       = document.getElementById('new-date').value;
+  const heureDebut = document.getElementById('new-heure-debut').value;
+  const heureFin   = (document.getElementById('new-heure-fin') || {}).value || '';
+  const lieu       = document.getElementById('new-lieu').value.trim();
+
+  if (!objet || !date || !lieu) return alert('Veuillez remplir tous les champs.');
+
+  const id = 'M' + Date.now().toString(36).toUpperCase();
+  const expiresAt = calculerExpiration(date, heureFin);
+  const meeting = { id, objet, date, heureDebut, heureFin, lieu, expiresAt, createdAt: new Date().toISOString() };
+
+  meetings.push(meeting);
+  presences[id] = [];
+  activeMeeting = meeting;
+  sauvegarder();
+  renderAll();
+  updateStats();
+  closeModal();
+
+  // Aller directement au QR
+  const btn = document.querySelector('.nav-item:nth-child(3)');
+  showView('qr', btn);
+}
+
+// Calcule l'horodatage d'expiration du QR (en millisecondes UNIX)
+// Règle : 2h après l'heure de fin de la réunion, ou 12h après création si pas d'heure de fin
+function calculerExpiration(date, heureFin) {
+  const maintenant = Date.now();
+  if (date && heureFin) {
+    // Construire une date complète à partir de la date du jour de réunion + heure de fin
+    const fin = new Date(date + 'T' + heureFin + ':00');
+    if (!isNaN(fin.getTime())) {
+      // 2h de marge après la fin officielle
+      return fin.getTime() + 2 * 60 * 60 * 1000;
+    }
+  }
+  // Cas par défaut : 12h après la génération
+  return maintenant + 12 * 60 * 60 * 1000;
+}
+
+// Vérifie si une réunion est encore valide (QR utilisable)
+function reunionEstValide(meeting) {
+  if (!meeting || !meeting.expiresAt) return true; // Anciennes réunions : pas de restriction
+  return Date.now() < meeting.expiresAt;
+}
+
+// Formate une date d'expiration pour affichage à l'admin
+function formaterExpiration(ms) {
+  if (!ms) return '—';
+  const d = new Date(ms);
+  return d.toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'})
+    + ' à ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+}
+
+function sauvegarder() {
+  localStorage.setItem('pasea-meetings',  JSON.stringify(meetings));
+  // Sauvegarder présences sans les sigs (trop lourd) + sigs séparément
+  const presencesSansSig = {};
+  Object.keys(presences).forEach(mid => {
+    presencesSansSig[mid] = (presences[mid] || []).map((p, i) => {
+      if (p.sig && p.sig.length > 100) {
+        localStorage.setItem('sig_' + mid + '_' + i, p.sig);
+      }
+      const copy = Object.assign({}, p);
+      delete copy.sig;
+      return copy;
+    });
+  });
+  localStorage.setItem('pasea-presences', JSON.stringify(presencesSansSig));
+}
+
+// ══ RENDER ══
+function renderAll() {
+  renderDashboard();
+  renderReunions();
+}
+
+function makeMeetingItem(m) {
+  const count   = (presences[m.id] || []).length;
+  const dateStr = m.date ? new Date(m.date + 'T12:00:00').toLocaleDateString('fr-FR', {weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
+  const actif   = activeMeeting && activeMeeting.id === m.id;
+  const div     = document.createElement('div');
+  div.className = 'meeting-item' + (actif ? ' selected' : '');
+  div.innerHTML = `
+    <div>
+      <div class="meeting-item-title">${m.objet}</div>
+      <div class="meeting-item-meta">${dateStr} &middot; ${m.lieu} &middot; ${m.heureDebut || '—'}</div>
+    </div>
+    <div class="meeting-item-right">
+      <div class="participant-count">${count}</div>
+      <button class="btn btn-outline" style="font-size:12px;padding:7px 13px;" onclick="selectionnerReunion('${m.id}')">Ouvrir</button>
+      <button class="btn" style="font-size:12px;padding:7px 13px;background:#FEE2E2;color:#DC2626;border:1.5px solid #FECACA;" onclick="supprimerReunion('${m.id}', event)">Supprimer</button>
+    </div>`;
+  return div;
+}
+
+function supprimerReunion(id, e) {
+  e.stopPropagation();
+  const m = meetings.find(x => x.id === id);
+  if (!m) return;
+  if (!confirm('Supprimer "' + m.objet + '" et toutes ses présences ?')) return;
+  meetings = meetings.filter(x => x.id !== id);
+  delete presences[id];
+  if (activeMeeting && activeMeeting.id === id) activeMeeting = meetings.length ? meetings[meetings.length-1] : null;
+  sauvegarder(); renderAll(); updateStats();
+}
+
+function renderDashboard() {
+  const el = document.getElementById('dashboard-meetings');
+  if (meetings.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Aucune réunion créée pour le moment.</div></div>';
+    return;
+  }
+  el.innerHTML = '';
+  [...meetings].reverse().slice(0,5).forEach(m => el.appendChild(makeMeetingItem(m)));
+}
+
+function renderReunions() {
+  const el = document.getElementById('all-meetings');
+  if (meetings.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">Aucune réunion pour le moment.</div></div>';
+    return;
+  }
+  el.innerHTML = '';
+  [...meetings].reverse().forEach(m => el.appendChild(makeMeetingItem(m)));
+}
+
+function selectionnerReunion(id) {
+  activeMeeting = meetings.find(m => m.id === id);
+  renderAll();
+  updateStats();
+  const btn = document.querySelector('.nav-item:nth-child(3)');
+  showView('qr', btn);
+  afficherQR(activeMeeting);
+}
+
+// ══ QR CODE ══
+function afficherQR(meeting) {
+  if (!meeting) return;
+  const dateStr = meeting.date ? new Date(meeting.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '';
+  const url = FORM_BASE_URL + '?id=' + encodeURIComponent(meeting.id)
+    + '&objet=' + encodeURIComponent(meeting.objet || '')
+    + '&date='  + encodeURIComponent(dateStr)
+    + '&heure=' + encodeURIComponent(meeting.heureDebut || '')
+    + '&lieu='  + encodeURIComponent(meeting.lieu || '')
+    + '&exp='   + encodeURIComponent(meeting.expiresAt || '');
+  const body = document.getElementById('qr-body');
+
+  const valide = reunionEstValide(meeting);
+  const expTexte = formaterExpiration(meeting.expiresAt);
+  const statutHtml = valide
+    ? '<div style="margin-top:10px;padding:8px 12px;background:#E8F5E9;border-left:3px solid #2E7D32;font-size:12px;color:#1B5E20;">QR code actif. Valide jusqu\'au <strong>' + expTexte + '</strong>.</div>'
+    : '<div style="margin-top:10px;padding:8px 12px;background:#FFEBEE;border-left:3px solid #C62828;font-size:12px;color:#B71C1C;">QR code expiré depuis le <strong>' + expTexte + '</strong>. Les participants ne peuvent plus signer.</div>';
+
+  body.innerHTML = `
+    <div class="qr-panel">
+      <div class="qr-box" id="qr-render"></div>
+      <div class="qr-info">
+        <div class="qr-meeting-title">${meeting.objet}</div>
+        <div class="qr-meta">
+          <div class="qr-meta-item">📅 <strong>${dateStr}</strong></div>
+          <div class="qr-meta-item">⏰ <strong>${meeting.heureDebut || '—'}${meeting.heureFin ? ' à ' + meeting.heureFin : ''}</strong></div>
+          <div class="qr-meta-item">📍 <strong>${meeting.lieu}</strong></div>
+        </div>
+        ${statutHtml}
+        <div class="qr-url">${url}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="showView('presences', document.querySelector('.nav-item:nth-child(4)'))">Voir les présences</button>
+          <button class="btn btn-or" onclick="imprimerQR()">🖨 Imprimer</button>
+          <button class="btn btn-outline" onclick="prolongerQR()">${valide ? 'Prolonger' : 'Réactiver le QR'}</button>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:var(--gris);line-height:1.6;">
+          Les participants scannent ce QR code avec leur téléphone.<br>
+          La page s'ouvre directement dans leur navigateur.
+        </div>
+      </div>
+    </div>`;
+
+  new QRCode(document.getElementById('qr-render'), {
+    text: url,
+    width: 168, height: 168,
+    colorDark: '#0D2B6B',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
+
+// Permet à l'admin de prolonger ou réactiver le QR d'une réunion
+function prolongerQR() {
+  if (!activeMeeting) return alert('Aucune réunion sélectionnée.');
+
+  const choix = prompt(
+    'Pendant combien de temps voulez-vous prolonger le QR ?\n\n'
+    + 'Tapez un nombre d\'heures (par exemple : 2, 6, 12, 24)\n'
+    + 'Ou laissez vide pour annuler.',
+    '6'
+  );
+
+  if (choix === null || choix.trim() === '') return;
+
+  const heures = parseFloat(choix);
+  if (isNaN(heures) || heures <= 0 || heures > 168) {
+    return alert('Veuillez saisir un nombre d\'heures valide (entre 1 et 168).');
+  }
+
+  // Repartir de maintenant pour la nouvelle expiration
+  const nouvelleExp = Date.now() + heures * 60 * 60 * 1000;
+  activeMeeting.expiresAt = nouvelleExp;
+
+  // Mettre à jour aussi dans le tableau global
+  const idx = meetings.findIndex(m => m.id === activeMeeting.id);
+  if (idx >= 0) meetings[idx].expiresAt = nouvelleExp;
+
+  sauvegarder();
+  afficherQR(activeMeeting);
+  alert('Le QR code est maintenant valide jusqu\'au ' + formaterExpiration(nouvelleExp) + '.');
+}
+
+function imprimerQR() {
+  if (!activeMeeting) return alert('Aucune réunion sélectionnée.');
+
+  // dateStr déclaré EN PREMIER avant toute utilisation
+  const dateStr = activeMeeting.date
+    ? new Date(activeMeeting.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
+    : '';
+
+  const url = FORM_BASE_URL + '?id=' + encodeURIComponent(activeMeeting.id)
+    + '&objet=' + encodeURIComponent(activeMeeting.objet || '')
+    + '&date='  + encodeURIComponent(dateStr)
+    + '&heure=' + encodeURIComponent(activeMeeting.heureDebut || '')
+    + '&lieu='  + encodeURIComponent(activeMeeting.lieu || '')
+    + '&exp='   + encodeURIComponent(activeMeeting.expiresAt || '');
+
+  // Récupération robuste du QR : canvas, image, ou SVG
+  function recupererQRSrc() {
+    const container = document.getElementById('qr-render');
+    if (!container) return '';
+
+    // 1) Essai canvas
+    const canvas = container.querySelector('canvas');
+    if (canvas) {
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        if (dataUrl && dataUrl.length > 100) return dataUrl;
+      } catch(e) { /* on continue */ }
+    }
+
+    // 2) Essai image (générée par makeImage)
+    const img = container.querySelector('img');
+    if (img && img.src && img.src.length > 100) return img.src;
+
+    // 3) Essai SVG -> conversion en data URL
+    const svg = container.querySelector('svg');
+    if (svg) {
+      try {
+        const xml = new XMLSerializer().serializeToString(svg);
+        return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(xml)));
+      } catch(e) { /* on continue */ }
+    }
+
+    return '';
+  }
+
+  const qrSrc = recupererQRSrc();
+
+  if (!qrSrc) {
+    return alert('Le QR code n\'est pas encore généré. Veuillez d\'abord créer ou sélectionner une réunion, puis attendez que le QR s\'affiche à l\'écran.');
+  }
+
+  const objet  = activeMeeting.objet || '';
+  const heure  = activeMeeting.heureDebut || '';
+  const lieu   = activeMeeting.lieu || '';
+
+  // Ouverture sécurisée de la fenêtre d'impression (sans bloquer le site)
+  const win = window.open('', '_blank');
+  if (!win) {
+    return alert('Impossible d\'ouvrir la fenêtre d\'impression. Veuillez autoriser les pop-ups dans votre navigateur.');
+  }
+
+  // Récupérer le logo PASEA depuis la sidebar pour le réutiliser sur la fiche d'impression
+  const logoEl = document.querySelector('.sidebar-brand-logo img');
+  const logoSrc = logoEl ? logoEl.src : '';
+
+  const html =
+    '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<title>Code de pr&eacute;sence &mdash; ' + (objet || 'R&eacute;union') + '</title>'
+    + '<style>'
+    + 'body{margin:0;font-family:Georgia,serif;text-align:center;padding:40px 40px 50px;color:#111;}'
+    + '.logo-wrap{margin-bottom:14px;}'
+    + '.logo-wrap img{width:90px;height:90px;object-fit:contain;}'
+    + '.head-proj{font-size:11.5pt;font-weight:700;text-transform:uppercase;color:#0D2B6B;margin-bottom:4px;line-height:1.4;}'
+    + '.head-uc{font-size:10pt;color:#444;margin-bottom:20px;letter-spacing:0.3px;}'
+    + '.tri{height:3px;width:60%;margin:0 auto 22px;background:linear-gradient(90deg,#0D2B6B 33%,#fff 33%,#fff 67%,#B8860B 67%);}'
+    + '.objet{font-size:12pt;font-weight:700;color:#111;margin-bottom:6px;}'
+    + '.invite{font-size:10.5pt;color:#444;margin-bottom:22px;}'
+    + '.qr-img{width:200px;height:200px;display:block;margin:0 auto 14px;border:1px solid #ddd;padding:8px;}'
+    + '.instruction{font-size:11pt;font-weight:700;margin-bottom:6px;color:#0D2B6B;}'
+    + '.url{font-size:7.5pt;color:#999;font-family:monospace;display:block;margin-bottom:24px;word-break:break-all;}'
+    + '.meta{font-size:10.5pt;line-height:1.9;color:#222;}'
+    + '.meta strong{color:#000;}'
+    + '@page{size:A4;margin:15mm;}'
+    + '</style></head><body>'
+    + (logoSrc ? '<div class="logo-wrap"><img src="' + logoSrc + '" alt="PASEA"></div>' : '')
+    + '<div class="head-proj">Projet d\'Appui &agrave; la S&eacute;curit&eacute; de l\'Eau et &agrave; l\'Assainissement</div>'
+    + '<div class="head-uc">Unit&eacute; de Coordination &mdash; UC-PASEA</div>'
+    + '<div class="tri"></div>'
+    + '<div class="objet">' + objet + '</div>'
+    + '<div class="invite">Merci de scanner ce code pour signer la liste de pr&eacute;sence.</div>'
+    + '<img class="qr-img" id="qr-print-img" src="' + qrSrc + '" alt="QR Code">'
+    + '<div class="instruction">Scannez avec votre t&eacute;l&eacute;phone</div>'
+    + '<span class="url">' + url + '</span>'
+    + '<div class="meta">'
+    + '<strong>Date</strong>&nbsp;&nbsp;' + dateStr + '<br>'
+    + '<strong>Heure</strong>&nbsp;&nbsp;' + heure + '<br>'
+    + '<strong>Lieu</strong>&nbsp;&nbsp;' + lieu
+    + '</div>'
+    // Script qui attend que l'image soit chargée AVANT de lancer l'impression
+    + '<script>'
+    + 'window.addEventListener("load", function() {'
+    +   'var img = document.getElementById("qr-print-img");'
+    +   'function lancerImpression() { try { window.focus(); window.print(); } catch(e) {} }'
+    +   'if (img && img.complete) { setTimeout(lancerImpression, 300); }'
+    +   'else if (img) { img.onload = function(){ setTimeout(lancerImpression, 300); }; img.onerror = function(){ setTimeout(lancerImpression, 300); }; }'
+    +   'else { setTimeout(lancerImpression, 500); }'
+    + '});'
+    + '<\/script>'
+    + '</body></html>';
+
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+}
+
+// ══ PRÉSENCES ══
+function afficherPresences(id) {
+  if (!id) return;
+  const data = presences[id] || [];
+  const m    = meetings.find(x => x.id === id);
+
+  if (m) {
+    document.getElementById('presences-title').textContent = m.objet + ' — ' + data.length + ' participant(s)';
+    document.getElementById('heure-fin-section').style.display = 'block';
+    if (m.heureFin) document.getElementById('heure-fin-input').value = m.heureFin;
+  }
+
+  const tbody = document.getElementById('presences-tbody');
+  if (data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty"><div class="empty-icon">👥</div><div class="empty-text">En attente des participants...</div></div></td></tr>';
+    return;
+  }
+
+  // Sauvegarder les signatures dans un stockage dédié
+  data.forEach((p, i) => {
+    if (p.sig && p.sig.length > 100) {
+      localStorage.setItem('sig_' + id + '_' + i, p.sig);
+    }
+  });
+
+  tbody.innerHTML = '';
+  data.forEach((p, i) => {
+    // Récupérer la signature depuis le stockage dédié si absente
+    const sig = (p.sig && p.sig.length > 100) ? p.sig : (localStorage.getItem('sig_' + id + '_' + i) || '');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:700;color:var(--bleu);">${i+1}</td>
+      <td>${p.nom ? p.nom.toUpperCase() : ''} ${p.prenoms||''}</td>
+      <td><span class="badge badge-${(p.genre||'m').toLowerCase()}">${p.genre||'—'}</span></td>
+      <td>${p.structure||'—'}</td>
+      <td>${p.fonction||'—'}</td>
+      <td>${p.tel ? String(p.tel) : '—'}</td>
+      <td style="font-size:12px;">${p.email||'—'}</td>
+      <td>${sig ? '<img class="sig-thumb" src="'+sig+'" alt="sig">' : '<span style="color:#ccc;">—</span>'}</td>
+      <td><span class="heure-badge">${p.heure||'—'}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function saveFin() {
+  if (!activeMeeting) return;
+  activeMeeting.heureFin = document.getElementById('heure-fin-input').value;
+  const idx = meetings.findIndex(m => m.id === activeMeeting.id);
+  if (idx >= 0) meetings[idx] = activeMeeting;
+  sauvegarder();
+  alert('Heure de fin enregistrée.');
+}
+
+// ══ STATS ══
+function updateStats() {
+  document.getElementById('stat-reunions').textContent    = meetings.length;
+  const total = Object.values(presences).reduce((a,b) => a + (b?b.length:0), 0);
+  document.getElementById('stat-participants').textContent = total;
+  document.getElementById('stat-active').textContent      = activeMeeting ? activeMeeting.objet.slice(0,22)+'...' : '—';
+  document.getElementById('stat-active-sub').textContent  = activeMeeting ? activeMeeting.date : 'aucune';
+  document.getElementById('stat-update').textContent      = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ══ REFRESH (Google Sheets) ══
+async function refreshData() {
+  if (!activeMeeting) return updateStats();
+  try {
+    const res  = await fetch(SCRIPT_URL + '?action=get&meetingId=' + activeMeeting.id);
+    const data = await res.json();
+    if (data && data.rows) {
+      const local = presences[activeMeeting.id] || [];
+      const merged = data.rows.map((r, i) => {
+        // Formater l heure si elle contient un timestamp ISO
+        let heure = r.heure || '';
+        if (heure && (heure.includes('T') || heure.includes('1899'))) {
+          try {
+            const d = new Date(heure);
+            heure = d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+          } catch(e) { heure = ''; }
+        }
+        // Signature depuis le stockage local
+        const sig = (local[i] && local[i].sig && local[i].sig.length > 100)
+          ? local[i].sig
+          : (localStorage.getItem('sig_' + activeMeeting.id + '_' + i) || r.sig || '');
+        return Object.assign({}, r, { heure, sig });
+      });
+      presences[activeMeeting.id] = merged;
+      sauvegarder();
+      afficherPresences(activeMeeting.id);
+    }
+  } catch(e) {
+    console.warn('Mode local — pas de connexion au serveur');
+  }
+  updateStats();
+}
+
+// ══ EXPORT PDF ══
+function exporterPDF() {
+  if (!activeMeeting) return alert('Aucune réunion sélectionnée.');
+  const data = presences[activeMeeting.id] || [];
+  const m    = activeMeeting;
+  const ds   = m.date ? new Date(m.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '';
+
+  // Récupération du logo PASEA depuis la sidebar pour le placer dans l'en-tête du PDF
+  const logoEl = document.querySelector('.sidebar-brand-logo img');
+  const logoSrc = logoEl ? logoEl.src : '';
+
+  let rows = '';
+  data.forEach((p, i) => {
+    // Récupération robuste de la signature : d'abord dans l'objet, sinon dans le localStorage (cohérent avec afficherPresences)
+    let sigSrc = (p.sig && p.sig.length > 50) ? p.sig : '';
+    if (!sigSrc) {
+      const sigStockee = localStorage.getItem('sig_' + activeMeeting.id + '_' + i);
+      if (sigStockee && sigStockee.length > 50) sigSrc = sigStockee;
+    }
+    const sig = sigSrc
+      ? '<img src="' + sigSrc + '" style="max-width:88px;max-height:38px;display:block;">'
+      : '';
+    const tel = p.tel ? String(p.tel) : '';
+    rows += '<tr>'
+      + '<td style="text-align:center;">' + (i+1) + '</td>'
+      + '<td>' + (p.nom||'') + ' ' + (p.prenoms||'') + '</td>'
+      + '<td style="text-align:center;">' + (p.genre||'') + '</td>'
+      + '<td>' + (p.structure||'') + '</td>'
+      + '<td>' + (p.fonction||'') + '</td>'
+      + '<td>' + tel + (p.email ? '<br><span style="color:#777;font-size:8pt;">' + p.email + '</span>' : '') + '</td>'
+      + '<td style="padding:3px;">' + sig + '</td>'
+      + '<td style="text-align:center;font-weight:600;color:#1565C0;">' + (p.heure||'') + '</td>'
+      + '</tr>';
+  });
+
+  const win = window.open('', '_blank');
+  win.document.write(
+    '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Liste de Présence PASEA</title>'
+    + '<style>'
+    + 'body{margin:0;padding:0;font-family:Arial,sans-serif;color:#111;font-size:9pt;}'
+    + '.page{padding:8mm 10mm;}'
+    /* En-tête : logo gauche, bloc texte centré, logo droite */
+    + '.ent{display:grid;grid-template-columns:90px 1fr 90px;align-items:center;gap:12px;margin-bottom:5mm;}'
+    + '.logo-l, .logo-r{display:flex;align-items:center;justify-content:center;}'
+    + '.logo-l img, .logo-r img{width:80px;height:80px;object-fit:contain;}'
+    + '.titre-c{text-align:center;}'
+    + '.titre-projet{font-size:11pt;font-weight:700;color:#0D2B6B;line-height:1.4;margin-bottom:3px;}'
+    + '.titre-objet{font-size:10pt;font-weight:600;color:#222;line-height:1.4;margin-bottom:2px;}'
+    + '.titre-date{font-size:9pt;color:#444;font-style:italic;}'
+    /* Filet tricolore et bandeau LISTE DE PRÉSENCE */
+    + '.tri{height:3px;background:linear-gradient(90deg,#0D2B6B 33%,white 33%,white 67%,#B8860B 67%);margin-bottom:3mm;}'
+    + '.band{background:#1565C0;padding:7px;text-align:center;margin-bottom:3mm;}'
+    + '.band span{font-size:13pt;font-weight:700;color:white;letter-spacing:2px;font-family:Georgia,serif;text-transform:uppercase;}'
+    /* Bloc Objet/Lieu à gauche, Date/Heure à droite */
+    + '.meta{display:flex;justify-content:space-between;align-items:stretch;margin-bottom:3mm;font-size:9pt;line-height:1.9;}'
+    + '.ml{flex:1;padding:5px 10px;border-left:3px solid #1565C0;}'
+    + '.mr{flex:0 0 auto;text-align:right;padding:5px 10px 5px 14px;border-right:3px solid #B8860B;background:#F8FAFF;min-width:38%;}'
+    /* Tableau avec tfoot intégré pour le pied de page */
+    + 'table{width:100%;border-collapse:collapse;}'
+    + 'thead{display:table-header-group;}'
+    + 'tfoot{display:table-footer-group;}'
+    + 'tr{page-break-inside:avoid;}'
+    + 'th{background:#1565C0;color:white;padding:5px 6px;text-align:left;font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;}'
+    + 'td{padding:6px;border-bottom:1px solid #E5E7EB;vertical-align:middle;}'
+    + 'tbody tr:nth-child(even) td{background:#F0F5FF;}'
+    + 'tfoot td{background:white !important;border-bottom:none;border-top:1px solid #B8860B;padding:5mm 6px 3mm;text-align:center;font-size:7pt;color:#666;line-height:1.7;}'
+    + 'tfoot strong{color:#0D2B6B;}'
+    + '@page{size:A4 landscape;margin:6mm;}'
+    + '</style></head><body><div class="page">'
+    + '<div class="ent">'
+    +   '<div class="logo-l">' + (logoSrc ? '<img src="' + logoSrc + '" alt="PASEA">' : '') + '</div>'
+    +   '<div class="titre-c">'
+    +     '<div class="titre-projet">Projet d\'Appui \u00e0 la S\u00e9curit\u00e9 de l\'Eau et \u00e0 l\'Assainissement (PASEA)</div>'
+    +     '<div class="titre-objet">' + (m.objet || '') + '</div>'
+    +     '<div class="titre-date">' + ds + (m.lieu ? ', ' + m.lieu : '') + '</div>'
+    +   '</div>'
+    +   '<div class="logo-r">' + (logoSrc ? '<img src="' + logoSrc + '" alt="PASEA">' : '') + '</div>'
+    + '</div>'
+    + '<div class="tri"></div>'
+    + '<div class="band"><span>LISTE DE PR\u00c9SENCE</span></div>'
+    + '<div class="meta">'
+    + '<div class="ml"><strong>Objet</strong>&nbsp;&nbsp;' + (m.objet||'') + '<br><strong>Lieu</strong>&nbsp;&nbsp;' + (m.lieu||'') + '</div>'
+    + '<div class="mr"><strong>Date</strong>&nbsp;&nbsp;' + ds + '<br><strong>Heure</strong>&nbsp;&nbsp;De ' + (m.heureDebut||'') + ' \u00e0 ' + (m.heureFin||'non cl\u00f4tur\u00e9e') + '</div>'
+    + '</div>'
+    + '<table><thead><tr>'
+    + '<th style="width:24px">N\u00b0</th>'
+    + '<th style="width:18%">NOM ET PR\u00c9NOMS</th>'
+    + '<th style="width:26px">G.</th>'
+    + '<th style="width:15%">STRUCTURE</th>'
+    + '<th style="width:15%">FONCTION</th>'
+    + '<th style="width:16%">T\u00c9L / EMAIL</th>'
+    + '<th style="width:92px">\u00c9MARGEMENT</th>'
+    + '<th style="width:50px">HEURE</th>'
+    + '</tr></thead>'
+    + '<tfoot><tr><td colspan="8">'
+    +   '<strong>Unit\u00e9 de Coordination du Projet d\'Appui \u00e0 la S\u00e9curit\u00e9 de l\'Eau et \u00e0 l\'Assainissement (UC-PASEA)</strong><br>'
+    +   'Sise \u00e0 la Riviera Bonoumin, lot 328, Ilot 24, 08 BPV 803 Abidjan 08 &nbsp;&middot;&nbsp; T\u00e9l : (225) 27 22 22 86 85 / 27 22 22 86 86'
+    + '</td></tr></tfoot>'
+    + '<tbody>' + rows + '</tbody></table>'
+    + '</div>'
+    // Script qui attend que TOUTES les images (signatures + logos) soient chargées avant d'imprimer
+    // Évite que print() ne se déclenche sur une page incomplète et perde les signatures
+    + '<script>'
+    + '(function() {'
+    +   'function lancerImpression() { try { window.focus(); window.print(); } catch(e) {} }'
+    +   'window.addEventListener("load", function() {'
+    +     'var images = document.images;'
+    +     'var total = images.length;'
+    +     'if (total === 0) { setTimeout(lancerImpression, 300); return; }'
+    +     'var charges = 0;'
+    +     'var deja = false;'
+    +     'function verifier() {'
+    +       'charges++;'
+    +       'if (charges >= total && !deja) { deja = true; setTimeout(lancerImpression, 400); }'
+    +     '}'
+    +     'for (var i = 0; i < total; i++) {'
+    +       'var img = images[i];'
+    +       'if (img.complete) { verifier(); }'
+    +       'else { img.addEventListener("load", verifier); img.addEventListener("error", verifier); }'
+    +     '}'
+    +     // Sécurité : si quelque chose bloque, on imprime quand même au bout de 8 secondes
+    +     'setTimeout(function() { if (!deja) { deja = true; lancerImpression(); } }, 8000);'
+    +   '});'
+    + '})();'
+    + '<\/script>'
+    + '</body></html>'
+  );
+  win.document.close();
+}
+
+// ══ EXPORT EXCEL (CSV avec BOM UTF-8 pour compatibilité Excel) ══
+function exporterExcel() {
+  if (!activeMeeting) return alert('Aucune réunion sélectionnée.');
+  const data = presences[activeMeeting.id] || [];
+  if (data.length === 0) return alert('Aucune présence à exporter.');
+
+  const m  = activeMeeting;
+  const ds = m.date ? new Date(m.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '';
+
+  // Échappement des champs CSV : on entoure de guillemets et on double les guillemets internes
+  const esc = function(v) {
+    if (v == null) return '';
+    const s = String(v).replace(/"/g, '""');
+    return '"' + s + '"';
+  };
+
+  // En-tête contextuel (objet, date, lieu, etc.)
+  const lignes = [];
+  lignes.push([esc('LISTE DE PRÉSENCE — UC-PASEA')].join(';'));
+  lignes.push([esc('Objet'),     esc(m.objet || '')].join(';'));
+  lignes.push([esc('Date'),      esc(ds)].join(';'));
+  lignes.push([esc('Heure'),     esc((m.heureDebut || '') + (m.heureFin ? ' à ' + m.heureFin : ''))].join(';'));
+  lignes.push([esc('Lieu'),      esc(m.lieu || '')].join(';'));
+  lignes.push([esc('Total participants'), esc(data.length)].join(';'));
+  lignes.push(''); // ligne vide de séparation
+
+  // En-têtes de colonnes
+  lignes.push([
+    esc('N°'), esc('Nom'), esc('Prénoms'), esc('Genre'),
+    esc('Structure'), esc('Fonction'), esc('Téléphone'),
+    esc('E-mail'), esc('Heure d\'arrivée')
+  ].join(';'));
+
+  // Données
+  data.forEach((p, i) => {
+    lignes.push([
+      esc(i+1),
+      esc(p.nom || ''),
+      esc(p.prenoms || ''),
+      esc(p.genre || ''),
+      esc(p.structure || ''),
+      esc(p.fonction || ''),
+      esc(p.tel || ''),
+      esc(p.email || ''),
+      esc(p.heure || '')
+    ].join(';'));
+  });
+
+  // BOM UTF-8 pour qu'Excel reconnaisse les accents
+  const bom = '\uFEFF';
+  const csv = bom + lignes.join('\r\n');
+
+  // Téléchargement
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const lien = document.createElement('a');
+  const nomFichier = 'Liste_Presence_' + (m.objet || 'Reunion').replace(/[^a-zA-Z0-9]/g, '_').substring(0, 40) + '_' + (m.date || '') + '.csv';
+  lien.href = url;
+  lien.download = nomFichier;
+  document.body.appendChild(lien);
+  lien.click();
+  document.body.removeChild(lien);
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
