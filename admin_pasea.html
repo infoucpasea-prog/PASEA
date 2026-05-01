@@ -460,9 +460,169 @@ tbody tr:hover td { background: var(--bleu-pale); }
 .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .modal-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
 
+/* ══ PAGE DE CONNEXION ══ */
+.login-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #0D2B6B 0%, #1565C0 100%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Jost', sans-serif;
+}
+
+.login-box {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+  width: 100%;
+  max-width: 380px;
+  padding: 36px 32px 28px;
+  text-align: center;
+}
+
+.login-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--tribleu);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.login-sub {
+  font-size: 11px;
+  color: var(--gris);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+.login-tribande {
+  display: flex;
+  height: 3px;
+  margin: 0 auto 26px;
+  width: 80px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.login-tribande > div { flex: 1; }
+.login-tribande .b1 { background: #FF8200; }
+.login-tribande .b2 { background: #FFFFFF; border-top: 1px solid #E2E8E4; border-bottom: 1px solid #E2E8E4; }
+.login-tribande .b3 { background: #009A44; }
+
+.login-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--texte);
+  margin-bottom: 6px;
+}
+
+.login-desc {
+  font-size: 13px;
+  color: var(--gris);
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
+.login-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  color: var(--texte);
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 12px;
+}
+
+.login-input:focus {
+  border-color: var(--bleu);
+  box-shadow: 0 0 0 3px rgba(21,101,192,0.12);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--bleu);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.login-btn:hover { background: var(--tribleu); }
+
+.login-error {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--rouge);
+  min-height: 16px;
+  font-weight: 500;
+}
+
+.login-footer {
+  margin-top: 22px;
+  font-size: 9px;
+  color: rgba(113,128,150,0.55);
+  font-style: italic;
+  letter-spacing: 0.4px;
+}
+
+/* ══ BOUTON DÉCONNEXION ══ */
+.logout-btn {
+  margin-top: 10px;
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  color: rgba(255,255,255,0.55);
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
 </style>
 </head>
 <body>
+
+<!-- ══ PAGE DE CONNEXION ══ -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">PASEA</div>
+    <div class="login-sub">Espace administrateur</div>
+    <div class="login-tribande">
+      <div class="b1"></div>
+      <div class="b2"></div>
+      <div class="b3"></div>
+    </div>
+    <div class="login-title">Authentification requise</div>
+    <div class="login-desc">Veuillez saisir le mot de passe pour accéder au tableau de bord.</div>
+    <input type="password" class="login-input" id="login-input" placeholder="Mot de passe" autocomplete="off">
+    <button class="login-btn" id="login-btn">Se connecter</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-footer">© 2026 — J. MESSOUM</div>
+  </div>
+</div>
 
 <!-- MODAL NOUVELLE RÉUNION -->
 <div class="modal-overlay" id="modal-new">
@@ -529,6 +689,7 @@ tbody tr:hover td { background: var(--bleu-pale); }
     <div class="sidebar-footer">
       UC-PASEA · Riviera Bonoumin<br>
       Abidjan, Côte d'Ivoire
+      <button class="logout-btn" id="logout-btn" onclick="seDeconnecter()">Se déconnecter</button>
       <div class="dev-sig">© 2026 — J. MESSOUM</div>
     </div>
   </aside>
@@ -696,8 +857,87 @@ let meetings      = JSON.parse(localStorage.getItem('pasea-meetings')   || '[]')
 let presences     = JSON.parse(localStorage.getItem('pasea-presences')  || '{}');
 let activeMeeting = null;
 
+// ══════════════════════════════════════════════════════════
+// ══ AUTHENTIFICATION (mot de passe d'accès au tableau de bord) ══
+// ══════════════════════════════════════════════════════════
+//
+// NOTE TECHNIQUE : ce mot de passe est un filtre d'accès, pas une
+// sécurité cryptographique. Il empêche l'accès accidentel ou curieux
+// au tableau de bord. La vraie sécurité des données vient du compte
+// Google PASEA qui héberge le Sheet et le Apps Script.
+//
+const PASEA_MOT_DE_PASSE = 'MOMPASEA17';
+const SESSION_KEY = 'pasea-session';
+const SESSION_DUREE = 8 * 60 * 60 * 1000; // 8 heures
+
+// Vérifie si la session est encore valide (renouvelée à chaque action)
+function sessionEstValide() {
+  try {
+    const data = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (!data || !data.expiresAt) return false;
+    return Date.now() < data.expiresAt;
+  } catch(e) { return false; }
+}
+
+// Crée ou prolonge la session
+function ouvrirSession() {
+  const data = { expiresAt: Date.now() + SESSION_DUREE };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+}
+
+function fermerSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+// Tente la connexion
+function tenterConnexion() {
+  const input = document.getElementById('login-input');
+  const erreur = document.getElementById('login-error');
+  const saisi = (input.value || '').trim();
+
+  if (saisi === PASEA_MOT_DE_PASSE) {
+    ouvrirSession();
+    erreur.textContent = '';
+    document.getElementById('login-overlay').style.display = 'none';
+    // L'application s'initialise normalement
+    initApp();
+  } else {
+    erreur.textContent = 'Mot de passe incorrect';
+    input.value = '';
+    input.focus();
+  }
+}
+
+function seDeconnecter() {
+  fermerSession();
+  // Recharger la page pour revenir à l'écran de connexion
+  window.location.reload();
+}
+
 // ══ INIT ══
+// L'application ne démarre QUE si la session est valide.
+// Sinon : on affiche la page de connexion.
 window.addEventListener('DOMContentLoaded', () => {
+  if (sessionEstValide()) {
+    // Session déjà valide : on prolonge et on lance l'app
+    ouvrirSession();
+    document.getElementById('login-overlay').style.display = 'none';
+    initApp();
+  } else {
+    // Pas de session : la page de connexion reste visible
+    const input = document.getElementById('login-input');
+    const btn = document.getElementById('login-btn');
+    input.focus();
+    btn.addEventListener('click', tenterConnexion);
+    input.addEventListener('keydown', function(ev) {
+      if (ev.key === 'Enter') tenterConnexion();
+    });
+  }
+});
+
+// Toute l'initialisation de l'application qui était auparavant
+// dans DOMContentLoaded se trouve maintenant dans cette fonction
+function initApp() {
   const now = new Date();
   document.getElementById('new-date').value = now.toISOString().split('T')[0];
   const hh = String(now.getHours()).padStart(2,'0');
@@ -718,7 +958,14 @@ window.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
     updateStats();
   }, 30 * 1000);
-});
+
+  // Renouveler la session à chaque action (clic, frappe, défilement)
+  ['click','keydown','scroll'].forEach(function(evt) {
+    document.addEventListener(evt, function() {
+      if (sessionEstValide()) ouvrirSession();
+    }, { passive: true });
+  });
+}
 
 // ══ NAVIGATION ══
 function showView(name, btn) {
