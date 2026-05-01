@@ -953,85 +953,143 @@ async function chargerReunion() {
 chargerReunion();
 
 // ══════════════════════════════════════════════════════════
-// ── AUTO-COMPLÉTION DU CHAMP NOM ──
-// Quand le participant tape son nom, on interroge le serveur
-// pour voir s'il a déjà été enregistré dans une réunion précédente.
-// Si oui, on lui propose une liste — un clic et tous les autres
-// champs (prénoms, structure, fonction, téléphone, e-mail) sont remplis.
+// ── AUTO-COMPLÉTION INTELLIGENTE DU CHAMP NOM ──
+// On télécharge UNE SEULE FOIS la liste consolidée des participants
+// connus (en arrière-plan, dès l'ouverture de la page).
+// Ensuite la recherche est instantanée et tolère :
+//   - les apostrophes (N'GOM = NGOM)
+//   - les accents (Kouassî = Kouassi)
+//   - la casse (ngom = NGOM)
+//   - les espaces (ASSI KOFFI trouvé en tapant ASSIKOFFI)
+//   - une recherche partout dans le nom (pas seulement au début)
 // ══════════════════════════════════════════════════════════
 (function setupAutocomplete() {
   var champNom    = document.getElementById('f-nom');
   var listeSugg   = document.getElementById('suggest-list');
-  var dernierTerm = '';
-  var minuteur    = null;
-  var requeteEnCours = null;
 
-  // Ferme la liste de suggestions si on clique ailleurs
+  var participantsCharges = null;  // sera rempli quand le téléchargement aura abouti
+  var chargementEnCours   = false;
+  var derniereSaisie      = '';
+
+  // Lance le téléchargement immédiatement, en arrière-plan
+  chargerListeParticipants();
+
+  // Réagir à la saisie dans le champ Nom
+  champNom.addEventListener('input', function() {
+    var terme = champNom.value.trim();
+    derniereSaisie = terme;
+
+    if (terme.length < 2) {
+      cacherSuggestions();
+      return;
+    }
+
+    if (participantsCharges) {
+      lancerRechercheLocale(terme);
+    } else {
+      // La liste n'est pas encore arrivée → on affiche un message d'attente
+      // et on relancera la recherche dès qu'elle sera là
+      afficherChargement();
+      if (!chargementEnCours) chargerListeParticipants();
+    }
+  });
+
+  // Cacher la liste si on clique ailleurs
   document.addEventListener('click', function(ev) {
     if (ev.target !== champNom && !listeSugg.contains(ev.target)) {
       cacherSuggestions();
     }
   });
 
-  // Réagir à la saisie dans le champ Nom
-  champNom.addEventListener('input', function() {
-    var terme = champNom.value.trim().toLowerCase();
-
-    // Pas assez de caractères : on ferme la liste
-    if (terme.length < 2) {
-      cacherSuggestions();
-      return;
-    }
-
-    // Évite les requêtes inutiles si le terme n'a pas changé
-    if (terme === dernierTerm) return;
-    dernierTerm = terme;
-
-    // Délai (debounce) pour éviter une requête à chaque touche
-    if (minuteur) clearTimeout(minuteur);
-    minuteur = setTimeout(function() { lancerRecherche(terme); }, 300);
-  });
-
-  // Cacher la liste si le champ perd le focus (avec un petit délai
+  // Cacher la liste quand le champ perd le focus (avec un petit délai
   // pour permettre le clic sur une suggestion)
   champNom.addEventListener('blur', function() {
     setTimeout(cacherSuggestions, 200);
   });
 
-  function lancerRecherche(terme) {
-    afficherChargement();
+  function chargerListeParticipants() {
+    if (chargementEnCours) return;
+    chargementEnCours = true;
 
-    var url = SCRIPT_URL + '?action=rechercher&nom=' + encodeURIComponent(terme);
+    var url = SCRIPT_URL + '?action=liste';
 
-    // Annule la requête précédente si elle est encore en vol
-    if (requeteEnCours && requeteEnCours.abort) {
-      try { requeteEnCours.abort(); } catch(e) {}
-    }
-
-    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-    requeteEnCours = ctrl;
-
-    var options = ctrl ? { signal: ctrl.signal } : {};
-
-    fetch(url, options)
+    fetch(url)
       .then(function(res) { return res.json(); })
       .then(function(data) {
-        // Si entre-temps l'utilisateur a continué de taper, on ignore
-        if (terme !== dernierTerm) return;
-        if (data && data.resultats && data.resultats.length > 0) {
-          afficherSuggestions(data.resultats);
+        chargementEnCours = false;
+        if (data && data.participants && data.participants.length > 0) {
+          // On pré-calcule les versions normalisées pour que la recherche soit ultra-rapide
+          participantsCharges = data.participants.map(function(p) {
+            return {
+              p: p,
+              cle: normaliser((p.nom || '') + ' ' + (p.prenoms || ''))
+            };
+          });
+
+          // Si l'utilisateur a déjà commencé à taper, on relance la recherche
+          if (derniereSaisie.length >= 2) {
+            lancerRechercheLocale(derniereSaisie);
+          }
         } else {
-          cacherSuggestions();
+          // Liste vide : pas grave, on n'affiche juste rien
+          participantsCharges = [];
         }
       })
       .catch(function(err) {
-        // Erreur réseau ou requête annulée : on ferme silencieusement
+        chargementEnCours = false;
+        // En cas d'échec, on n'empêche pas la saisie manuelle
         cacherSuggestions();
       });
   }
 
+  // Normalise une chaîne pour la recherche : sans apostrophes, accents,
+  // espaces, tirets, en minuscules. Permet la recherche tolérante.
+  function normaliser(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/[\u2019\u2018\u02BC\u0060\u00B4]/g, "'")
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/['\s\-]/g, '')
+      .trim();
+  }
+
+  function lancerRechercheLocale(terme) {
+    var t = normaliser(terme);
+    if (!t || t.length < 2) {
+      cacherSuggestions();
+      return;
+    }
+
+    var resultats = [];
+    var max = 8;
+
+    // 1er passage : matches au début du nom (priorité haute)
+    for (var i = 0; i < participantsCharges.length && resultats.length < max; i++) {
+      if (participantsCharges[i].cle.indexOf(t) === 0) {
+        resultats.push(participantsCharges[i].p);
+      }
+    }
+
+    // 2e passage : matches au milieu du nom (priorité basse)
+    if (resultats.length < max) {
+      for (var j = 0; j < participantsCharges.length && resultats.length < max; j++) {
+        var k = participantsCharges[j].cle;
+        if (k.indexOf(t) > 0) {
+          resultats.push(participantsCharges[j].p);
+        }
+      }
+    }
+
+    if (resultats.length === 0) {
+      cacherSuggestions();
+    } else {
+      afficherSuggestions(resultats);
+    }
+  }
+
   function afficherChargement() {
-    listeSugg.innerHTML = '<div class="suggest-loading">Recherche en cours...</div>';
+    listeSugg.innerHTML = '<div class="suggest-loading">Préparation des suggestions...</div>';
     listeSugg.classList.add('on');
   }
 
@@ -1041,14 +1099,14 @@ chargerReunion();
       var item = document.createElement('div');
       item.className = 'suggest-item';
 
-      var nomComplet = (p.nom || '') + ' ' + (p.prenoms || '');
+      var nomComplet = ((p.nom || '') + ' ' + (p.prenoms || '')).trim();
       var meta = [];
       if (p.structure) meta.push(p.structure);
       if (p.fonction)  meta.push(p.fonction);
 
       var nomDiv = document.createElement('div');
       nomDiv.className = 'suggest-name';
-      nomDiv.textContent = nomComplet.trim();
+      nomDiv.textContent = nomComplet;
 
       var metaDiv = document.createElement('div');
       metaDiv.className = 'suggest-meta';
@@ -1123,7 +1181,7 @@ chargerReunion();
 
     cacherSuggestions();
 
-    // Petit feedback visuel : on met le focus sur la zone de signature
+    // Petit feedback visuel : on défile vers la zone de signature
     setTimeout(function() {
       var sigEl = document.getElementById('sig-zone');
       if (sigEl) sigEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
