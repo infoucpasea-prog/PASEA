@@ -126,6 +126,14 @@ html, body {
   line-height: 1.6;
 }
 
+.dev-sig {
+  margin-top: 8px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 0.5px;
+  font-style: italic;
+}
+
 /* ══ MAIN ══ */
 .main { margin-left: 250px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
@@ -521,6 +529,7 @@ tbody tr:hover td { background: var(--bleu-pale); }
     <div class="sidebar-footer">
       UC-PASEA · Riviera Bonoumin<br>
       Abidjan, Côte d'Ivoire
+      <div class="dev-sig">© 2026 — J. MESSOUM</div>
     </div>
   </aside>
 
@@ -542,14 +551,14 @@ tbody tr:hover td { background: var(--bleu-pale); }
       <div class="view active" id="view-dashboard">
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Réunions créées</div>
+            <div class="stat-label">Réunions en cours</div>
             <div class="stat-value bleu" id="stat-reunions">0</div>
-            <div class="stat-sub">au total</div>
+            <div class="stat-sub">actives à l'instant</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Participants enregistrés</div>
             <div class="stat-value" id="stat-participants">0</div>
-            <div class="stat-sub">toutes réunions</div>
+            <div class="stat-sub">réunions en cours</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Réunion active</div>
@@ -670,11 +679,17 @@ tbody tr:hover td { background: var(--bleu-pale); }
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════════
+//  PASEA — Tableau de bord administrateur
+//  Conception et développement : J. MESSOUM
+//  © 2026
+// ══════════════════════════════════════════════════════════
+
 // ══ CONFIG ══
 // URL du formulaire participant (à héberger en ligne)
 const FORM_BASE_URL = 'https://infoucpasea-prog.github.io/PASEA/participant_pasea.html';
-// URL Google Apps Script (à renseigner après déploiement)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzxIqQxqBDvBK_YvKBshRXf1tYe05cU98x5ms6f8JkTQsmyFjdPWK48n5n4UWnGEFK/exec';
+// URL Google Apps Script — backend PASEA (compte info.ucpasea@gmail.com)
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNWaCcB4SjMQ4ha58ZBj3lVs3nn7sXQo7pxtXwiTysx3JUH4cEStoKNtcN2J0ILx7_rQ/exec';
 
 // ══ STATE ══
 let meetings      = JSON.parse(localStorage.getItem('pasea-meetings')   || '[]');
@@ -689,9 +704,20 @@ window.addEventListener('DOMContentLoaded', () => {
   const mm = String(now.getMinutes()).padStart(2,'0');
   document.getElementById('new-heure-debut').value = hh + ':' + mm;
 
-  if (meetings.length > 0) activeMeeting = meetings[meetings.length - 1];
+  if (meetings.length > 0) {
+    // L'active par défaut : la dernière réunion encore en cours, sinon aucune
+    const enCours = meetings.filter(reunionEstEnCours);
+    activeMeeting = enCours.length > 0 ? enCours[enCours.length - 1] : null;
+  }
   renderAll();
   updateStats();
+
+  // Rafraîchir le dashboard toutes les 30 secondes pour que les réunions
+  // sortent automatiquement de la liste quand leur heure de fin est atteinte
+  setInterval(() => {
+    renderDashboard();
+    updateStats();
+  }, 30 * 1000);
 });
 
 // ══ NAVIGATION ══
@@ -800,15 +826,14 @@ function creerReunion() {
 }
 
 // Calcule l'horodatage d'expiration du QR (en millisecondes UNIX)
-// Règle : 2h après l'heure de fin de la réunion, ou 12h après création si pas d'heure de fin
+// Règle : si une heure de fin est saisie à la création, le QR expire pile à cette heure.
+// Sinon, le QR reste valide 12h après création.
 function calculerExpiration(date, heureFin) {
   const maintenant = Date.now();
   if (date && heureFin) {
-    // Construire une date complète à partir de la date du jour de réunion + heure de fin
     const fin = new Date(date + 'T' + heureFin + ':00');
     if (!isNaN(fin.getTime())) {
-      // 2h de marge après la fin officielle
-      return fin.getTime() + 2 * 60 * 60 * 1000;
+      return fin.getTime();
     }
   }
   // Cas par défaut : 12h après la génération
@@ -819,6 +844,14 @@ function calculerExpiration(date, heureFin) {
 function reunionEstValide(meeting) {
   if (!meeting || !meeting.expiresAt) return true; // Anciennes réunions : pas de restriction
   return Date.now() < meeting.expiresAt;
+}
+
+// Vérifie si une réunion est en cours (pour le filtrage du tableau de bord)
+// Une réunion est dite "en cours" tant que son QR n'a pas expiré
+// Dès que l'admin saisit l'heure de fin, expiresAt est mis dans le passé,
+// ce qui termine immédiatement la réunion.
+function reunionEstEnCours(meeting) {
+  return reunionEstValide(meeting);
 }
 
 // Formate une date d'expiration pour affichage à l'admin
@@ -884,12 +917,14 @@ function supprimerReunion(id, e) {
 
 function renderDashboard() {
   const el = document.getElementById('dashboard-meetings');
-  if (meetings.length === 0) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Aucune réunion créée pour le moment.</div></div>';
+  // Filtrer uniquement les réunions en cours
+  const enCours = meetings.filter(reunionEstEnCours);
+  if (enCours.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Aucune réunion en cours pour le moment.</div></div>';
     return;
   }
   el.innerHTML = '';
-  [...meetings].reverse().slice(0,5).forEach(m => el.appendChild(makeMeetingItem(m)));
+  [...enCours].reverse().slice(0,5).forEach(m => el.appendChild(makeMeetingItem(m)));
 }
 
 function renderReunions() {
@@ -1154,21 +1189,43 @@ function afficherPresences(id) {
 
 function saveFin() {
   if (!activeMeeting) return;
-  activeMeeting.heureFin = document.getElementById('heure-fin-input').value;
+  const heureFin = document.getElementById('heure-fin-input').value;
+  if (!heureFin) return alert('Veuillez saisir une heure de fin.');
+
+  activeMeeting.heureFin = heureFin;
+
+  // Dès que l'heure de fin est saisie, le QR expire immédiatement
+  // → la réunion sort des "en cours" et le formulaire participant est bloqué
+  activeMeeting.expiresAt = Date.now() - 1;
+
   const idx = meetings.findIndex(m => m.id === activeMeeting.id);
   if (idx >= 0) meetings[idx] = activeMeeting;
   sauvegarder();
-  alert('Heure de fin enregistrée.');
+  renderAll();
+  updateStats();
+  alert('Heure de fin enregistrée. La réunion est clôturée et le QR code n\'est plus actif.');
 }
 
 // ══ STATS ══
 function updateStats() {
-  document.getElementById('stat-reunions').textContent    = meetings.length;
-  const total = Object.values(presences).reduce((a,b) => a + (b?b.length:0), 0);
+  // Filtrer pour ne garder que les réunions en cours
+  const enCours = meetings.filter(reunionEstEnCours);
+
+  document.getElementById('stat-reunions').textContent = enCours.length;
+
+  // Total des participants : uniquement ceux des réunions en cours
+  let total = 0;
+  enCours.forEach(m => {
+    const p = presences[m.id];
+    if (p && p.length) total += p.length;
+  });
   document.getElementById('stat-participants').textContent = total;
-  document.getElementById('stat-active').textContent      = activeMeeting ? activeMeeting.objet.slice(0,22)+'...' : '—';
-  document.getElementById('stat-active-sub').textContent  = activeMeeting ? activeMeeting.date : 'aucune';
-  document.getElementById('stat-update').textContent      = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+
+  // Réunion active : si elle est terminée, on n'affiche rien comme active
+  const activeEnCours = activeMeeting && reunionEstEnCours(activeMeeting);
+  document.getElementById('stat-active').textContent = activeEnCours ? activeMeeting.objet.slice(0,22)+'...' : '—';
+  document.getElementById('stat-active-sub').textContent = activeEnCours ? activeMeeting.date : 'aucune en cours';
+  document.getElementById('stat-update').textContent = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 }
 
 // ══ REFRESH (Google Sheets) ══

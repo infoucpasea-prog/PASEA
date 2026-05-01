@@ -581,6 +581,62 @@ select.field-inp { cursor: pointer; }
 }
 
 .alerte.on { transform: translateX(-50%) translateY(0); }
+
+/* ══ AUTO-COMPLÉTION DU CHAMP NOM ══ */
+/* Liste déroulante de suggestions affichée sous le champ Nom */
+.field-inner-wrap {
+  position: relative;
+}
+
+.suggest-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--bord);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 200;
+  display: none;
+}
+
+.suggest-list.on { display: block; }
+
+.suggest-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--gris-pale);
+  transition: background 0.12s;
+}
+
+.suggest-item:last-child { border-bottom: none; }
+.suggest-item:hover, .suggest-item.active { background: var(--bleu-pale); }
+
+.suggest-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texte);
+  line-height: 1.3;
+}
+
+.suggest-meta {
+  font-size: 11px;
+  color: var(--gris);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.suggest-loading {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--gris);
+  font-style: italic;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -657,9 +713,10 @@ select.field-inp { cursor: pointer; }
     <div class="fields-card">
       <div class="field-row">
         <div class="field-side"><div class="field-side-bar"></div></div>
-        <div class="field-inner">
+        <div class="field-inner field-inner-wrap">
           <div class="field-lbl">Nom<span class="req">*</span></div>
-          <input class="field-inp" id="f-nom" type="text" placeholder="NOM DE FAMILLE" autocomplete="family-name" style="text-transform:uppercase">
+          <input class="field-inp" id="f-nom" type="text" placeholder="NOM DE FAMILLE" autocomplete="off" style="text-transform:uppercase">
+          <div class="suggest-list" id="suggest-list"></div>
         </div>
       </div>
       <div class="field-row">
@@ -816,7 +873,14 @@ select.field-inp { cursor: pointer; }
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzxIqQxqBDvBK_YvKBshRXf1tYe05cU98x5ms6f8JkTQsmyFjdPWK48n5n4UWnGEFK/exec';
+// ══════════════════════════════════════════════════════════
+//  PASEA — Formulaire participant
+//  Conception et développement : J. MESSOUM
+//  © 2026
+// ══════════════════════════════════════════════════════════
+
+// Backend PASEA (compte info.ucpasea@gmail.com)
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNWaCcB4SjMQ4ha58ZBj3lVs3nn7sXQo7pxtXwiTysx3JUH4cEStoKNtcN2J0ILx7_rQ/exec';
 const params = new URLSearchParams(window.location.search);
 const meetingId = params.get('id') || 'demo';
 
@@ -887,6 +951,185 @@ async function chargerReunion() {
 }
 
 chargerReunion();
+
+// ══════════════════════════════════════════════════════════
+// ── AUTO-COMPLÉTION DU CHAMP NOM ──
+// Quand le participant tape son nom, on interroge le serveur
+// pour voir s'il a déjà été enregistré dans une réunion précédente.
+// Si oui, on lui propose une liste — un clic et tous les autres
+// champs (prénoms, structure, fonction, téléphone, e-mail) sont remplis.
+// ══════════════════════════════════════════════════════════
+(function setupAutocomplete() {
+  var champNom    = document.getElementById('f-nom');
+  var listeSugg   = document.getElementById('suggest-list');
+  var dernierTerm = '';
+  var minuteur    = null;
+  var requeteEnCours = null;
+
+  // Ferme la liste de suggestions si on clique ailleurs
+  document.addEventListener('click', function(ev) {
+    if (ev.target !== champNom && !listeSugg.contains(ev.target)) {
+      cacherSuggestions();
+    }
+  });
+
+  // Réagir à la saisie dans le champ Nom
+  champNom.addEventListener('input', function() {
+    var terme = champNom.value.trim().toLowerCase();
+
+    // Pas assez de caractères : on ferme la liste
+    if (terme.length < 2) {
+      cacherSuggestions();
+      return;
+    }
+
+    // Évite les requêtes inutiles si le terme n'a pas changé
+    if (terme === dernierTerm) return;
+    dernierTerm = terme;
+
+    // Délai (debounce) pour éviter une requête à chaque touche
+    if (minuteur) clearTimeout(minuteur);
+    minuteur = setTimeout(function() { lancerRecherche(terme); }, 300);
+  });
+
+  // Cacher la liste si le champ perd le focus (avec un petit délai
+  // pour permettre le clic sur une suggestion)
+  champNom.addEventListener('blur', function() {
+    setTimeout(cacherSuggestions, 200);
+  });
+
+  function lancerRecherche(terme) {
+    afficherChargement();
+
+    var url = SCRIPT_URL + '?action=rechercher&nom=' + encodeURIComponent(terme);
+
+    // Annule la requête précédente si elle est encore en vol
+    if (requeteEnCours && requeteEnCours.abort) {
+      try { requeteEnCours.abort(); } catch(e) {}
+    }
+
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    requeteEnCours = ctrl;
+
+    var options = ctrl ? { signal: ctrl.signal } : {};
+
+    fetch(url, options)
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        // Si entre-temps l'utilisateur a continué de taper, on ignore
+        if (terme !== dernierTerm) return;
+        if (data && data.resultats && data.resultats.length > 0) {
+          afficherSuggestions(data.resultats);
+        } else {
+          cacherSuggestions();
+        }
+      })
+      .catch(function(err) {
+        // Erreur réseau ou requête annulée : on ferme silencieusement
+        cacherSuggestions();
+      });
+  }
+
+  function afficherChargement() {
+    listeSugg.innerHTML = '<div class="suggest-loading">Recherche en cours...</div>';
+    listeSugg.classList.add('on');
+  }
+
+  function afficherSuggestions(resultats) {
+    listeSugg.innerHTML = '';
+    resultats.forEach(function(p) {
+      var item = document.createElement('div');
+      item.className = 'suggest-item';
+
+      var nomComplet = (p.nom || '') + ' ' + (p.prenoms || '');
+      var meta = [];
+      if (p.structure) meta.push(p.structure);
+      if (p.fonction)  meta.push(p.fonction);
+
+      var nomDiv = document.createElement('div');
+      nomDiv.className = 'suggest-name';
+      nomDiv.textContent = nomComplet.trim();
+
+      var metaDiv = document.createElement('div');
+      metaDiv.className = 'suggest-meta';
+      metaDiv.textContent = meta.join(' · ');
+
+      item.appendChild(nomDiv);
+      if (meta.length > 0) item.appendChild(metaDiv);
+
+      // Au clic : on remplit tous les champs
+      item.addEventListener('click', function() { remplirChamps(p); });
+      // Empêche que le mousedown ferme la liste avant le click
+      item.addEventListener('mousedown', function(e) { e.preventDefault(); });
+
+      listeSugg.appendChild(item);
+    });
+    listeSugg.classList.add('on');
+  }
+
+  function cacherSuggestions() {
+    listeSugg.classList.remove('on');
+    listeSugg.innerHTML = '';
+  }
+
+  // Remplit tous les champs du formulaire avec les données du participant
+  // sélectionné. L'utilisateur n'a plus qu'à signer.
+  function remplirChamps(p) {
+    var setVal = function(id, val) {
+      var el = document.getElementById(id);
+      if (el && val) el.value = val;
+    };
+
+    setVal('f-nom',       (p.nom || '').toUpperCase());
+    setVal('f-prenoms',   p.prenoms);
+    setVal('f-structure', p.structure);
+    setVal('f-fonction',  p.fonction);
+    setVal('f-email',     p.email);
+
+    // Genre : on sélectionne l'option correspondante
+    if (p.genre) {
+      var sel = document.getElementById('f-genre');
+      if (sel) {
+        var g = p.genre.toUpperCase();
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === g) { sel.selectedIndex = i; break; }
+        }
+      }
+    }
+
+    // Téléphone : on sépare l'indicatif du numéro
+    if (p.tel) {
+      var telBrut = String(p.tel).trim();
+      var indicatifs = ['+225','+33','+1','+44','+49','+32','+41','+212','+213','+216','+221','+223','+224','+226','+227','+228','+229','+230','+233','+234','+237','+241','+242','+243','+245','+248','+249','+250','+251','+252','+253','+254','+255','+256','+257','+258','+260','+261','+263','+264','+265','+266','+267','+268','+269'];
+      var indicatifTrouve = '+225';
+      var numero = telBrut;
+
+      for (var k = 0; k < indicatifs.length; k++) {
+        if (telBrut.indexOf(indicatifs[k]) === 0) {
+          indicatifTrouve = indicatifs[k];
+          numero = telBrut.substring(indicatifs[k].length).trim();
+          break;
+        }
+      }
+
+      var selInd = document.getElementById('f-indicatif');
+      if (selInd) {
+        for (var j = 0; j < selInd.options.length; j++) {
+          if (selInd.options[j].value === indicatifTrouve) { selInd.selectedIndex = j; break; }
+        }
+      }
+      setVal('f-tel', numero);
+    }
+
+    cacherSuggestions();
+
+    // Petit feedback visuel : on met le focus sur la zone de signature
+    setTimeout(function() {
+      var sigEl = document.getElementById('sig-zone');
+      if (sigEl) sigEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  }
+})();
 
 // ── SIGNATURE ──
 const zone   = document.getElementById('sig-zone');
