@@ -483,6 +483,26 @@ tbody tr:hover td { background: var(--bleu-pale); }
   text-align: center;
 }
 
+.login-logo-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: white;
+  padding: 6px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(13,43,107,0.08);
+  border: 1px solid var(--bord);
+}
+
+.login-logo-img img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
 .login-logo {
   font-family: 'Cormorant Garamond', serif;
   font-size: 28px;
@@ -608,6 +628,9 @@ tbody tr:hover td { background: var(--bleu-pale); }
 <!-- ══ PAGE DE CONNEXION ══ -->
 <div class="login-overlay" id="login-overlay">
   <div class="login-box">
+    <div class="login-logo-img" id="login-logo-img">
+      <!-- Logo inséré dynamiquement depuis la sidebar pour éviter de dupliquer le base64 -->
+    </div>
     <div class="login-logo">PASEA</div>
     <div class="login-sub">Espace administrateur</div>
     <div class="login-tribande">
@@ -918,6 +941,19 @@ function seDeconnecter() {
 // L'application ne démarre QUE si la session est valide.
 // Sinon : on affiche la page de connexion.
 window.addEventListener('DOMContentLoaded', () => {
+  // Insérer dynamiquement le logo PASEA sur la page de connexion
+  // (récupéré depuis la sidebar pour éviter de dupliquer le base64)
+  try {
+    var logoSidebar = document.querySelector('.sidebar-brand-logo img');
+    var logoCible = document.getElementById('login-logo-img');
+    if (logoSidebar && logoCible) {
+      var img = document.createElement('img');
+      img.src = logoSidebar.src;
+      img.alt = 'PASEA';
+      logoCible.appendChild(img);
+    }
+  } catch(e) {}
+
   if (sessionEstValide()) {
     // Session déjà valide : on prolonge et on lance l'app
     ouvrirSession();
